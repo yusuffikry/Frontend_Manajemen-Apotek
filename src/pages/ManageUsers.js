@@ -1,18 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-<<<<<<< HEAD
-const ManageUsersContainer = styled.div`
-  padding: 2rem;
-`;
-
-const ManageUsers = () => {
-  return (
-    <ManageUsersContainer>
-      <h2>Manage Users Page</h2>
-      {/* Your content for managing users */}
-    </ManageUsersContainer>
-=======
 const TableContainer = styled.div`
   width: 100%;
   margin: 2rem 0;
@@ -94,7 +82,6 @@ const ManageUsers = () => {
         </tbody>
       </Table>
     </TableContainer>
->>>>>>> 032f5f611940f2f0585e2607ac756b8c4f4da576
   );
 };
 

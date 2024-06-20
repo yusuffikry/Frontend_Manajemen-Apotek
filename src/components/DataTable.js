@@ -25,6 +25,26 @@ const Table = styled.table`
   }
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center; /* Center align buttons horizontally */
+  gap: 0.5rem; /* Space between buttons */
+`;
+
+const Button = styled.button`
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #1abc9c;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #16a085;
+  }
+`;
+
+
 const DataTable = () => {
   const data = [
     { name: 'Ryujin', address: 'Makassar', phone: '085362693671' },
@@ -53,7 +73,11 @@ const DataTable = () => {
               <td>{row.name}</td>
               <td>{row.address}</td>
               <td>{row.phone}</td>
-              <td><button>Edit</button></td>
+              <td>
+              <ButtonContainer>
+                  <Button>Delete</Button>
+                </ButtonContainer>
+              </td>
             </tr>
           ))}
         </tbody>

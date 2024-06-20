@@ -6,6 +6,8 @@ import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
 import Login from './Login';
 import ManageUsers from './pages/ManageUsers'; // Import the ManageUsers component
+import StokObat from './pages/StokObat';
+import DataPemasok from './pages/DataPemasok';
 
 const AppContainer = styled.div`
   display: flex;
@@ -28,8 +30,8 @@ const App = () => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/manage-users" element={<ManageUsers />} /> {/* Add this route */}
             <Route path="/data-karyawan" element={<Dashboard />} />
-            <Route path="/data-pemasok" element={<div>Data Pemasok Page</div>} />
-            <Route path="/stok-obat" element={<div>Stok Obat Page</div>} />
+            <Route path="/data-pemasok" element={<DataPemasok />} />
+            <Route path="/stok-obat" element={<StokObat />} />
           </Routes>
         </MainContent>
         <Footer />
