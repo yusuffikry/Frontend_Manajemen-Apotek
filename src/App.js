@@ -1,11 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
 import Login from './Login';
-import ManageUsers from './pages/ManageUsers'; // Import the ManageUsers component
+import Register from './Register'; // Import the Register component
+import ManageUsers from './pages/ManageUsers';
 import StokObat from './pages/StokObat';
 import DataPemasok from './pages/DataPemasok';
 
@@ -20,24 +21,32 @@ const MainContent = styled.main`
 `;
 
 const App = () => {
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+
   return (
-    <Router>
-      <AppContainer>
-        <Navbar />
-        <MainContent>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/manage-users" element={<ManageUsers />} /> {/* Add this route */}
-            <Route path="/data-karyawan" element={<Dashboard />} />
-            <Route path="/data-pemasok" element={<DataPemasok />} />
-            <Route path="/stok-obat" element={<StokObat />} />
-          </Routes>
-        </MainContent>
-        <Footer />
-      </AppContainer>
-    </Router>
+    <AppContainer>
+      {!isAuthPage && <Navbar />}
+      <MainContent>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/manage-users" element={<ManageUsers />} />
+          <Route path="/data-karyawan" element={<Dashboard />} />
+          <Route path="/data-pemasok" element={<DataPemasok />} />
+          <Route path="/stok-obat" element={<StokObat />} />
+        </Routes>
+      </MainContent>
+      {!isAuthPage && <Footer />}
+    </AppContainer>
   );
 };
 
-export default App;
+const AppWrapper = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default AppWrapper;

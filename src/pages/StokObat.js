@@ -90,7 +90,6 @@ const StokObat = () => {
             <Td>450</Td>
             <Td><button>🗑️</button></Td>
           </tr>
-          {/* Tambahkan baris lainnya sesuai kebutuhan */}
         </tbody>
       </Table>
     </Container>
