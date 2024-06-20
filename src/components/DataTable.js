@@ -1,74 +1,64 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Table = styled.table`
+const TableContainer = styled.div`
   width: 100%;
-  border-collapse: collapse;
   margin: 2rem 0;
 `;
 
-const Th = styled.th`
-  border: 1px solid #ddd;
-  padding: 8px;
-  background-color: #f2f2f2;
-  text-align: left;
-`;
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
 
-const Td = styled.td`
-  border: 1px solid #ddd;
-  padding: 8px;
+  th, td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f4f4f4;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
 `;
 
 const DataTable = () => {
+  const data = [
+    { name: 'Ryujin', address: 'Makassar', phone: '085362693671' },
+    { name: 'Yuta', address: 'Gowa', phone: '085362689790' },
+    { name: 'Rika', address: 'Malino', phone: '085362693699' },
+    { name: 'Yufi', address: 'Pare-pare', phone: '083212693671' },
+    { name: 'Zabrina', address: 'Kalimantan', phone: '085362693873' },
+    { name: 'Lisa', address: 'Jakarta', phone: '085361433671' }
+  ];
+
   return (
-    <Table>
-      <thead>
-        <tr>
-          <Th>Nama</Th>
-          <Th>Alamat</Th>
-          <Th>Nomor HP</Th>
-          <Th>Aksi</Th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <Td>Ryujin</Td>
-          <Td>Makassar</Td>
-          <Td>085362693671</Td>
-          <Td>...</Td>
-        </tr>
-        <tr>
-          <Td>Yuta</Td>
-          <Td>Gowa</Td>
-          <Td>085362689790</Td>
-          <Td>...</Td>
-        </tr>
-        <tr>
-          <Td>Rika</Td>
-          <Td>Malino</Td>
-          <Td>085362693699</Td>
-          <Td>...</Td>
-        </tr>
-        <tr>
-          <Td>Yufi</Td>
-          <Td>Pare-pare</Td>
-          <Td>083212693671</Td>
-          <Td>...</Td>
-        </tr>
-        <tr>
-          <Td>Zabrina</Td>
-          <Td>Kalimantan</Td>
-          <Td>085362693873</Td>
-          <Td>...</Td>
-        </tr>
-        <tr>
-          <Td>Lisa</Td>
-          <Td>Jakarta</Td>
-          <Td>085361433671</Td>
-          <Td>...</Td>
-        </tr>
-      </tbody>
-    </Table>
+    <TableContainer>
+      <h2>Data Karyawan</h2>
+      <Table>
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Alamat</th>
+            <th>Nomor HP</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, index) => (
+            <tr key={index}>
+              <td>{row.name}</td>
+              <td>{row.address}</td>
+              <td>{row.phone}</td>
+              <td><button>Edit</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </TableContainer>
   );
 };
 
