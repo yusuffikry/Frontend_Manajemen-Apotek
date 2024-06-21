@@ -9,6 +9,7 @@ import Register from './Register'; // Import the Register component
 import ManageUsers from './pages/ManageUsers';
 import StokObat from './pages/StokObat';
 import DataPemasok from './pages/DataPemasok';
+import TransaksiPenjualan from './pages/TransaksiPenjualan';
 
 const AppContainer = styled.div`
   display: flex;
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/data-karyawan" element={<Dashboard />} />
           <Route path="/data-pemasok" element={<DataPemasok />} />
           <Route path="/stok-obat" element={<StokObat />} />
+          <Route path="/transaksi-penjualan" element={<TransaksiPenjualan />} />
         </Routes>
       </MainContent>
       {!isAuthPage && <Footer />}

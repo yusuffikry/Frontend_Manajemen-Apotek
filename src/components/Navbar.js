@@ -33,6 +33,7 @@ const Navbar = () => {
         <NavItem to="/data-karyawan" activeClassName="active">Data Karyawan</NavItem>
         <NavItem to="/data-pemasok" activeClassName="active">Data Pemasok</NavItem>
         <NavItem to="/stok-obat" activeClassName="active">Stok Obat</NavItem>
+        <NavItem to="/transaksi-penjualan" activeClassName="active">Transaksi Penjualan</NavItem>
       </NavLinks>
     </NavbarContainer>
   );
