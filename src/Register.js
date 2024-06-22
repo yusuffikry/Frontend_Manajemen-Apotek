@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -51,9 +51,14 @@ const Button = styled.button`
 
 const Register = () => {
   const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleRegister = () => {
     // Implement register logic here
+    // Example: Save user data and navigate to login
+    localStorage.setItem('user', JSON.stringify({ name, email, password }));
     navigate('/login');
   };
 
@@ -61,9 +66,9 @@ const Register = () => {
     <RegisterContainer>
       <RegisterForm>
         <Title>Register</Title>
-        <Input type="name" placeholder='Name'/>
-        <Input type="email" placeholder="Email" />
-        <Input type="password" placeholder="Password" />
+        <Input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+        <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <Button onClick={handleRegister}>Daftar</Button>
         <p>Sudah punya akun? <a href="/login" style={{ color: 'white', textDecoration: 'underline' }}>Login</a></p>
       </RegisterForm>
