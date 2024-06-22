@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -49,29 +49,20 @@ const Button = styled.button`
   }
 `;
 
-const Login = ({ setIsAuthenticated }) => {
+const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   const handleLogin = () => {
     // Implement login logic here
-    // Example: Validate credentials and set authentication status
-    if (email === 'admin@example.com' && password === 'password') {
-      localStorage.setItem('isAuthenticated', 'true');
-      setIsAuthenticated(true);
-      navigate('/data-karyawan');
-    } else {
-      alert('Invalid credentials');
-    }
+    navigate('/data-karyawan');
   };
 
   return (
     <LoginContainer>
       <LoginForm>
         <Title>Login</Title>
-        <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <Input type="email" placeholder="Email" />
+        <Input type="password" placeholder="Password" />
         <Button onClick={handleLogin}>Masuk</Button>
         <p>Belum punya akun? <a href="/register" style={{ color: 'white', textDecoration: 'underline' }}>Register</a></p>
       </LoginForm>
