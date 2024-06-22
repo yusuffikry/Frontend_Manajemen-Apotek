@@ -1,4 +1,3 @@
-// src/pages/DataKaryawan.js
 import React from 'react';
 import styled from 'styled-components';
 
@@ -8,18 +7,18 @@ const DataKaryawanContainer = styled.div`
 
 const FormContainer = styled.div`
   background-color: #467aa4;
-  padding: 2rem;
+  padding: 3.5rem;
   border-radius: 10px;
-  margin: 2rem auto;  /* Centers the form */
-  max-width: 1380px;  /* Sets the maximum width of the form */
+  margin: 1rem auto;  /* Centers the form */
+  max-width: 1000px;  /* Sets the maximum width of the form */
   width: 100%;
 `;
 
 const Input = styled.input`
   display: block;
-  width: 100%;
+  width: calc(100% - 20px); /* Adjusted width */
   padding: 0.5rem;
-  margin: 0.5rem 0;
+  margin: 1.5rem 0;
   border: none;
   border-radius: 5px;
   font-size: 1rem;
@@ -28,7 +27,7 @@ const Input = styled.input`
 const Button = styled.button`
   width: 100%;
   padding: 0.5rem;
-  margin: 1rem 0;
+  margin: 0;
   border: none;
   border-radius: 5px;
   background-color: #1abc9c;
@@ -43,32 +42,48 @@ const Button = styled.button`
 
 const TableContainer = styled.div`
   width: 90%;
-  margin: 2rem auto;
+  margin: 0 auto; /* Center align */
 `;
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  margin: 1rem 0;
+  margin-top: 1rem; /* Adjusted margin */
+`;
 
-  th, td {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-  }
+const TableHead = styled.thead`
+  background-color: #f4f4f4;
+`;
 
-  th {
-    background-color: #f4f4f4;
-  }
+const TableCell = styled.th`
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+`;
 
-  tr:nth-child(even) {
+const TableBody = styled.tbody``;
+
+const TableRow = styled.tr`
+  &:nth-child(even) {
     background-color: #f9f9f9;
   }
+`;
+
+const TableCellBody = styled.td`
+  padding: 0.75rem;
+  border: 1px solid #ddd;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+  width: 30%; /* Sesuaikan dengan lebar yang diinginkan */
+  margin: 0 auto; /* Auto margin untuk memposisikan secara horizontal di tengah */
+`;
+
+const Title = styled.h2`
+  text-align: center; /* Center align the title */
+  margin-top: 0rem; /* Adjust margin top */
 `;
 
 const DataKaryawan = () => {
@@ -84,38 +99,38 @@ const DataKaryawan = () => {
   return (
     <DataKaryawanContainer>
       <FormContainer>
-        <h2>Mengelola Data Karyawan</h2>
+        <Title>Mengelola Data Karyawan</Title>
         <Input type="text" placeholder="Nama" />
         <Input type="text" placeholder="Alamat" />
         <Input type="text" placeholder="Nomor Telepon" />
         <Button>Tambah Karyawan</Button>
       </FormContainer>
       
-      <h3>Daftar Karyawan</h3>
       <TableContainer>
+        <h2>Daftar Karyawan</h2>
         <Table>
-          <thead>
+          <TableHead>
             <tr>
-              <th>Nama</th>
-              <th>Alamat</th>
-              <th>Nomor HP</th>
-              <th>Aksi</th>
+              <TableCell>Nama</TableCell>
+              <TableCell>Alamat</TableCell>
+              <TableCell>Nomor HP</TableCell>
+              <TableCell>Aksi</TableCell>
             </tr>
-          </thead>
-          <tbody>
+          </TableHead>
+          <TableBody>
             {data.map((row, index) => (
-              <tr key={index}>
-                <td>{row.name}</td>
-                <td>{row.address}</td>
-                <td>{row.phone}</td>
-                <td>
+              <TableRow key={index}>
+                <TableCellBody>{row.name}</TableCellBody>
+                <TableCellBody>{row.address}</TableCellBody>
+                <TableCellBody>{row.phone}</TableCellBody>
+                <TableCellBody>
                   <ButtonContainer>
                     <Button>Hapus</Button>
                   </ButtonContainer>
-                </td>
-              </tr>
+                </TableCellBody>
+              </TableRow>
             ))}
-          </tbody>
+          </TableBody>
         </Table>
       </TableContainer>
     </DataKaryawanContainer>

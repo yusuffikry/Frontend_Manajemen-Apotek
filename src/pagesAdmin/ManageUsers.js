@@ -61,7 +61,7 @@ const ManageUsers = () => {
 
   return (
     <TableContainer>
-      <h2>Manage Users</h2>
+      <h1>Manage Users</h1>
       <Table>
         <thead>
           <Tr>

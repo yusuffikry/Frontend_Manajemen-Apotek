@@ -11,6 +11,9 @@ import StokObat from './pagesAdmin/StokObat';
 import DataPemasok from './pagesAdmin/DataPemasok';
 import TransaksiPenjualan from './pagesAdmin/TransaksiPenjualan';
 import DataKaryawan from './pagesAdmin/DataKaryawan';
+import DashboardUser from './pagesUsers/DashboardUsers';
+import EditProfile from './pagesUsers/EditProfile';
+import PenjualanObat from './pagesUsers/PenjualanObat';
 
 const AppContainer = styled.div`
   display: flex;
@@ -33,12 +36,15 @@ const App = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/manage-users" element={<ManageUsers />} />
-          <Route path="/data-karyawan" element={<DataKaryawan />} />
-          <Route path="/data-pemasok" element={<DataPemasok />} />
-          <Route path="/stok-obat" element={<StokObat />} />
-          <Route path="/transaksi-penjualan" element={<TransaksiPenjualan />} />
+          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin/manage-users" element={<ManageUsers />} />
+          <Route path="/admin/data-karyawan" element={<DataKaryawan />} />
+          <Route path="/admin/data-pemasok" element={<DataPemasok />} />
+          <Route path="/admin/stok-obat" element={<StokObat />} />
+          <Route path="/admin/transaksi-penjualan" element={<TransaksiPenjualan />} />
+          <Route path="/user" element={<DashboardUser />} />
+          <Route path="/user/edit-profile" element={<EditProfile />} />
+          <Route path="/user/penjualan-obat" element={<PenjualanObat />} />
         </Routes>
       </MainContent>
       {!isAuthPage && <Footer />}
