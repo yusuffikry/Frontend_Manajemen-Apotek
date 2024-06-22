@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,13 +10,14 @@ const LoginContainer = styled.div`
   background-color: #3498db;
 `;
 
-const LoginForm = styled.div`
+const LoginForm = styled.form`
   background-color: #467aa4;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   color: white;
+  width: 500px;
 `;
 
 const Title = styled.h2`
@@ -25,18 +26,18 @@ const Title = styled.h2`
 
 const Input = styled.input`
   display: block;
-  width: 100%;
-  padding: 0.5rem;
-  margin: 0.5rem 0;
+  width: calc(100% - 20px); /* Account for padding */
+  padding: 10px;
+  margin: 10px auto;
   border: none;
   border-radius: 5px;
   font-size: 1rem;
 `;
 
 const Button = styled.button`
-  width: 100%;
-  padding: 0.5rem;
-  margin: 1rem 0;
+  width: calc(100% - 20px); /* Account for padding */
+  padding: 10px;
+  margin: 10px auto;
   border: none;
   border-radius: 5px;
   background-color: #1abc9c;
@@ -49,22 +50,47 @@ const Button = styled.button`
   }
 `;
 
-const Login = () => {
-  const navigate = useNavigate();
+const RegisterLink = styled.p`
+  margin-top: 1rem;
+  font-size: 0.9rem;
+`;
 
-  const handleLogin = () => {
-    // Implement login logic here
-    navigate('/data-karyawan');
+const Login = ({ setIsAuthenticated }) => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (email === 'admin@example.com' && password === 'password') {
+      localStorage.setItem('isAuthenticated', 'true');
+      setIsAuthenticated(true);
+      navigate('/data-karyawan');
+    } else {
+      alert('Invalid credentials');
+    }
   };
 
   return (
     <LoginContainer>
-      <LoginForm>
+      <LoginForm onSubmit={handleLogin}>
         <Title>Login</Title>
-        <Input type="email" placeholder="Email" />
-        <Input type="password" placeholder="Password" />
-        <Button onClick={handleLogin}>Masuk</Button>
-        <p>Belum punya akun? <a href="/register" style={{ color: 'white', textDecoration: 'underline' }}>Register</a></p>
+        <Input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <Button type="submit">Masuk</Button>
+        <RegisterLink>Belum punya akun? <a href="/register" style={{ color: 'white', textDecoration: 'underline' }}>Register</a></RegisterLink>
       </LoginForm>
     </LoginContainer>
   );
