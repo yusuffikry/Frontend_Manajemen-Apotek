@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 const NavbarContainer = styled.div`
   background-color: #3498db;
-  padding: 2rem;
+  padding: 3rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,34 +19,54 @@ const NavItem = styled(NavLink)`
   color: white;
   text-decoration: none;
   font-size: 1.2rem;
-  margin-right: 5px; /* Adjust the margin between items as needed */
-  padding: 8px 16px; /* Add padding for better click area */
+  margin-right: 5px;
+  padding: 8px 16px;
 
   &:hover {
-    background-color: #2980b9; /* Darken background color on hover */
+    background-color: #2980b9;
   }
 
   &.active {
     font-weight: bold;
-    background-color: #2980b9; /* Set background color for active state */
-    border-radius: 5px; /* Optional: Add rounded corners */
+    background-color: #2980b9;
+    border-radius: 5px;
   }
 `;
 
-const Brand = styled.h1`
+const Brand = styled(NavLink)`
   color: #ffffff;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+const LogoutButton = styled.button`
+  background-color: transparent;
+  color: white;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const Navbar = () => {
+  const handleLogout = () => {
+    console.log('Logout button clicked');
+  };
+
   return (
     <NavbarContainer>
-      <Brand>Admin Dashboard</Brand>
+      <Brand to="/" exact>Admin Dashboard</Brand>
       <NavLinks>
         <NavItem to="/manage-users" activeClassName="active">Manage Users</NavItem>
         <NavItem to="/data-karyawan" activeClassName="active">Data Karyawan</NavItem>
         <NavItem to="/data-pemasok" activeClassName="active">Data Pemasok</NavItem>
         <NavItem to="/stok-obat" activeClassName="active">Stok Obat</NavItem>
         <NavItem to="/transaksi-penjualan" activeClassName="active">Transaksi Penjualan</NavItem>
+        <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
       </NavLinks>
     </NavbarContainer>
   );

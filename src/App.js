@@ -3,13 +3,14 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import styled from 'styled-components';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pagesAdmin/Dashboard';
 import Login from './Login';
 import Register from './Register'; // Import the Register component
-import ManageUsers from './pages/ManageUsers';
-import StokObat from './pages/StokObat';
-import DataPemasok from './pages/DataPemasok';
-import TransaksiPenjualan from './pages/TransaksiPenjualan';
+import ManageUsers from './pagesAdmin/ManageUsers';
+import StokObat from './pagesAdmin/StokObat';
+import DataPemasok from './pagesAdmin/DataPemasok';
+import TransaksiPenjualan from './pagesAdmin/TransaksiPenjualan';
+import DataKaryawan from './pagesAdmin/DataKaryawan';
 
 const AppContainer = styled.div`
   display: flex;
@@ -34,7 +35,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Dashboard />} />
           <Route path="/manage-users" element={<ManageUsers />} />
-          <Route path="/data-karyawan" element={<Dashboard />} />
+          <Route path="/data-karyawan" element={<DataKaryawan />} />
           <Route path="/data-pemasok" element={<DataPemasok />} />
           <Route path="/stok-obat" element={<StokObat />} />
           <Route path="/transaksi-penjualan" element={<TransaksiPenjualan />} />
