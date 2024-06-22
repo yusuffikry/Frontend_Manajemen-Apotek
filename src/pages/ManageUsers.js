@@ -3,33 +3,39 @@ import styled from 'styled-components';
 
 const TableContainer = styled.div`
   width: 100%;
-  margin: 2rem 0;
+  max-width: 2100px; /* Atur lebar maksimum tabel */
+  margin: 2rem auto; /* Pusatkan tabel dengan margin atas dan bawah 2rem */
 `;
 
 const Table = styled.table`
   width: 100%;
+  max-width: 100%; /* Gunakan lebar maksimum tabel sesuai dengan container */
   border-collapse: collapse;
-  margin: 1rem 0;
+`;
 
-  th, td {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    text-align: center; /* Center align text in all table cells */
-  }
+const Th = styled.th`
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  background-color: #f4f4f4;
+  text-align: center;
+`;
 
-  th {
-    background-color: #f4f4f4;
-  }
+const Td = styled.td`
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: center;
+`;
 
-  tr:nth-child(even) {
+const Tr = styled.tr`
+  &:nth-child(even) {
     background-color: #f9f9f9;
   }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: center; /* Center align buttons horizontally */
-  gap: 0.5rem; /* Space between buttons */
+  justify-content: center;
+  gap: 0.5rem;
 `;
 
 const Button = styled.button`
@@ -58,26 +64,26 @@ const ManageUsers = () => {
       <h2>Manage Users</h2>
       <Table>
         <thead>
-          <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
+          <Tr>
+            <Th>Username</Th>
+            <Th>Email</Th>
+            <Th>Role</Th>
+            <Th>Actions</Th>
+          </Tr>
         </thead>
         <tbody>
           {data.map((row, index) => (
-            <tr key={index}>
-              <td>{row.username}</td>
-              <td>{row.email}</td>
-              <td>{row.role}</td>
-              <td>
+            <Tr key={index}>
+              <Td>{row.username}</Td>
+              <Td>{row.email}</Td>
+              <Td>{row.role}</Td>
+              <Td>
                 <ButtonContainer>
                   <Button>Edit</Button>
                   <Button>Delete</Button>
                 </ButtonContainer>
-              </td>
-            </tr>
+              </Td>
+            </Tr>
           ))}
         </tbody>
       </Table>

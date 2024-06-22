@@ -2,19 +2,23 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  padding: 2rem;
+  padding: 1rem;
 `;
 
 const FormContainer = styled.div`
   background-color: #467aa4;
   padding: 2rem;
   border-radius: 10px;
-  margin: 2rem 0;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 900px; /* Contoh atur lebar maksimum menjadi 600px */
+  width: 100%; /* Agar FormContainer mengisi lebar kontainer induk */
 `;
 
 const Input = styled.input`
-  display: block;
-  width: 100%;
+  width: 100%; /* Menggunakan lebar 100% agar mengisi seluruh kontainer */
   padding: 0.5rem;
   margin: 0.5rem 0;
   border: none;
@@ -23,7 +27,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  width: 100%;
+  width: 50%;
   padding: 0.5rem;
   margin: 1rem 0;
   border: none;
@@ -39,9 +43,9 @@ const Button = styled.button`
 `;
 
 const Table = styled.table`
-  width: 100%;
+  width: 90%;
   border-collapse: collapse;
-  margin: 2rem 0;
+  margin: 2rem auto;
 `;
 
 const Th = styled.th`

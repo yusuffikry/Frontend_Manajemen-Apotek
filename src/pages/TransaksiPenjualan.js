@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 const TableContainer = styled.div`
-  width: 100%;
-  margin: 2rem 0;
+  width: 90%;
+  margin: 2rem auto;
 `;
 
 const Table = styled.table`
