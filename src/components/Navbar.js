@@ -69,7 +69,7 @@ const Navbar = () => {
         <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
 
         <NavItem to="/user/penjualan-obat" activeClassName="active">Penjualan Obat</NavItem>
-        <NavItem to="/user/edit-profile" activeClassName="active">Edit Profile</NavItem>
+        <NavItem to="/user/edit-profile" activeClassName="active">Profile</NavItem>
       </NavLinks>
     </NavbarContainer>
   );
