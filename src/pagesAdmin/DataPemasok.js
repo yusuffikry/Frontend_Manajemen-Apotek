@@ -91,7 +91,7 @@ const ButtonContainer = styled.div`
 
 const DataPemasok = () => {
   const [data, setData] = useState([
-    { id: 1, nama: 'Yuta', jenis: 'Tablet', merek: 'Rp20.000', tanggal: '14 Jan, 10.40 PM', jumlah: 450 }
+    { id: 1, nama: 'Perusahaan A', telepon: '08123456789' }
   ]);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -99,10 +99,7 @@ const DataPemasok = () => {
   const [editData, setEditData] = useState({
     id: '',
     nama: '',
-    jenis: '',
-    merek: '',
-    tanggal: '',
-    jumlah: ''
+    telepon: ''
   });
 
   const handleInputChange = (e) => {
@@ -116,19 +113,16 @@ const DataPemasok = () => {
       updatedData[editIndex] = editData;
       setData(updatedData);
       setEditIndex(null);
-      setEditData({ id: '', nama: '', jenis: '', merek: '', tanggal: '', jumlah: '' });
+      setEditData({ id: '', nama: '', telepon: '' });
       setIsEditing(false);
     } else {
       const newData = {
         id: data.length + 1,
         nama: editData.nama,
-        jenis: editData.jenis,
-        merek: editData.merek,
-        tanggal: editData.tanggal,
-        jumlah: editData.jumlah
+        telepon: editData.telepon
       };
       setData([...data, newData]);
-      setEditData({ id: '', nama: '', jenis: '', merek: '', tanggal: '', jumlah: '' });
+      setEditData({ id: '', nama: '', telepon: '' });
     }
   };
 
@@ -154,36 +148,15 @@ const DataPemasok = () => {
         <Input
           type="text"
           name="nama"
-          placeholder="Nama Pemasok"
+          placeholder="Nama Perusahaan"
           value={editData.nama}
           onChange={handleInputChange}
         />
         <Input
           type="text"
-          name="jenis"
-          placeholder="Jenis Obat"
-          value={editData.jenis}
-          onChange={handleInputChange}
-        />
-        <Input
-          type="text"
-          name="merek"
-          placeholder="Merek Obat"
-          value={editData.merek}
-          onChange={handleInputChange}
-        />
-        <Input
-          type="text"
-          name="tanggal"
-          placeholder="Tanggal di Pasok"
-          value={editData.tanggal}
-          onChange={handleInputChange}
-        />
-        <Input
-          type="text"
-          name="jumlah"
-          placeholder="Jumlah Obat"
-          value={editData.jumlah}
+          name="telepon"
+          placeholder="Nomor Telepon"
+          value={editData.telepon}
           onChange={handleInputChange}
         />
         <AddButton onClick={handleAdd}>{isEditing ? 'Simpan' : 'Tambah'}</AddButton>
@@ -192,11 +165,8 @@ const DataPemasok = () => {
         <thead>
           <tr>
             <Th>ID</Th>
-            <Th>Nama</Th>
-            <Th>Jenis</Th>
-            <Th>Merek</Th>
-            <Th>Tanggal</Th>
-            <Th>Jumlah</Th>
+            <Th>Nama Perusahaan</Th>
+            <Th>Nomor Telepon</Th>
             <Th>Action</Th>
           </tr>
         </thead>
@@ -205,10 +175,7 @@ const DataPemasok = () => {
             <tr key={index}>
               <Td>{row.id}</Td>
               <Td>{row.nama}</Td>
-              <Td>{row.jenis}</Td>
-              <Td>{row.merek}</Td>
-              <Td>{row.tanggal}</Td>
-              <Td>{row.jumlah}</Td>
+              <Td>{row.telepon}</Td>
               <Td>
                 <ButtonContainer>
                   <EditButton onClick={() => handleEdit(index)}>Edit</EditButton>

@@ -11,6 +11,7 @@ const Table = styled.table`
   width: 100%;
   max-width: 100%;
   border-collapse: collapse;
+  display: ${(props) => (props.isHidden ? 'none' : 'table')}; /* Hide table if isHidden prop is true */
 `;
 
 const Th = styled.th`
@@ -90,7 +91,7 @@ const FormContainer = styled.div`
 `;
 
 const Input = styled.input`
-  width: 100%;
+  width: calc(100% - 1rem); /* Adjusting width to account for padding */
   padding: 0.5rem;
   margin: 0.5rem 0;
   border: none;
@@ -100,29 +101,29 @@ const Input = styled.input`
 
 const ManageUsers = () => {
   const [data, setData] = useState([
-    { username: 'user1', name: 'John Doe', email: 'user1@example.com', address: '123 Main St', role: 'Admin' },
-    { username: 'user2', name: 'Jane Smith', email: 'user2@example.com', address: '456 Elm St', role: 'User' },
-    { username: 'user3', name: 'Alice Johnson', email: 'user3@example.com', address: '789 Maple Ave', role: 'User' },
-    { username: 'user4', name: 'Bob Brown', email: 'user4@example.com', address: '101 Pine St', role: 'Moderator' },
+    { name: 'John Doe', email: 'user1@example.com', address: '123 Main St', role: 'Admin' },
+    { name: 'Jane Smith', email: 'user2@example.com', address: '456 Elm St', role: 'User' },
+    { name: 'Alice Johnson', email: 'user3@example.com', address: '789 Maple Ave', role: 'User' },
+    { name: 'Bob Brown', email: 'user4@example.com', address: '101 Pine St', role: 'Moderator' },
   ]);
 
   const [isAdding, setIsAdding] = useState(false);
   const [newUser, setNewUser] = useState({
-    username: '',
     name: '',
     email: '',
     address: '',
-    role: ''
+    role: '',
+    password: '' // Added password field
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [editUser, setEditUser] = useState({
-    username: '',
     name: '',
     email: '',
     address: '',
-    role: ''
+    role: '',
+    password: '' // Added password field
   });
 
   const handleInputChange = (e) => {
@@ -141,12 +142,12 @@ const ManageUsers = () => {
       setData(updatedData);
       setEditIndex(null);
       setIsEditing(false);
-      setEditUser({ username: '', name: '', email: '', address: '', role: '' });
+      setEditUser({ name: '', email: '', address: '', role: '', password: '' });
     } else {
       setData([...data, newUser]);
-      setNewUser({ username: '', name: '', email: '', address: '', role: '' });
-      setIsAdding(false);
+      setNewUser({ name: '', email: '', address: '', role: '', password: '' });
     }
+    setIsAdding(false); // Close the form after adding/editing
   };
 
   const handleDeleteUser = (index) => {
@@ -174,20 +175,13 @@ const ManageUsers = () => {
           setIsAdding(!isAdding);
           setIsEditing(false);
           setEditIndex(null);
-          setEditUser({ username: '', name: '', email: '', address: '', role: '' });
+          setEditUser({ name: '', email: '', address: '', role: '', password: '' });
         }}>
           {isAdding || isEditing ? 'Cancel' : 'Add User'}
         </AddUserButton>
       </RightButtonContainer>
-      {(isAdding || isEditing) && (
+      {(isAdding || isEditing) ? (
         <FormContainer>
-          <Input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={isEditing ? editUser.username : newUser.username}
-            onChange={handleInputChange}
-          />
           <Input
             type="text"
             name="name"
@@ -216,13 +210,21 @@ const ManageUsers = () => {
             value={isEditing ? editUser.role : newUser.role}
             onChange={handleInputChange}
           />
+          {isAdding || isEditing ? ( // Display password input only when adding or editing
+            <Input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={isEditing ? editUser.password : newUser.password}
+              onChange={handleInputChange}
+            />
+          ) : null}
           <AddUserButton onClick={handleAddUser}>{isEditing ? 'Save Changes' : 'Add User'}</AddUserButton>
         </FormContainer>
-      )}
-      <Table>
+      ) : null}
+      <Table isHidden={isAdding || isEditing}>
         <thead>
           <Tr>
-            <Th>Username</Th>
             <Th>Name</Th>
             <Th>Email</Th>
             <Th>Address</Th>
@@ -233,7 +235,6 @@ const ManageUsers = () => {
         <tbody>
           {data.map((row, index) => (
             <Tr key={index}>
-              <Td>{row.username}</Td>
               <Td>{row.name}</Td>
               <Td>{row.email}</Td>
               <Td>{row.address}</Td>
