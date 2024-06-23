@@ -57,10 +57,10 @@ const Button = styled.button`
   }
 `;
 
-const RegisterLink = styled.p`
-  margin-top: 1rem;
-  font-size: 1rem;
-`;
+// const RegisterLink = styled.p`
+//   margin-top: 1rem;
+//   font-size: 1rem;
+// `;
 
 const ArrowBack = styled(Link)`
   position: absolute;
@@ -118,7 +118,7 @@ const Login = ({ setIsAuthenticated }) => {
           required
         />
         <Button type="submit">Masuk</Button>
-        <RegisterLink>Belum punya akun? <Link to="/register" style={{ color: 'white', textDecoration: 'underline' }}>Register</Link></RegisterLink>
+        {/* <RegisterLink>Belum punya akun? <Link to="/register" style={{ color: 'white', textDecoration: 'underline' }}>Register</Link></RegisterLink> */}
       </LoginForm>
     </LoginContainer>
   );

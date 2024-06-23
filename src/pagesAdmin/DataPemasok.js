@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -13,12 +13,12 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 600px; /* Contoh atur lebar maksimum menjadi 600px */
-  width: 100%; /* Agar FormContainer mengisi lebar kontainer induk */
+  max-width: 600px;
+  width: 100%;
 `;
 
 const Input = styled.input`
-  width: 100%; /* Menggunakan lebar 100% agar mengisi seluruh kontainer */
+  width: 100%;
   padding: 0.5rem;
   margin: 0.5rem 0;
   border: none;
@@ -90,20 +90,103 @@ const ButtonContainer = styled.div`
 `;
 
 const DataPemasok = () => {
-  const data = [
+  const [data, setData] = useState([
     { id: 1, nama: 'Yuta', jenis: 'Tablet', merek: 'Rp20.000', tanggal: '14 Jan, 10.40 PM', jumlah: 450 }
-  ];
+  ]);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
+  const [editData, setEditData] = useState({
+    id: '',
+    nama: '',
+    jenis: '',
+    merek: '',
+    tanggal: '',
+    jumlah: ''
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditData({ ...editData, [name]: value });
+  };
+
+  const handleAdd = () => {
+    if (isEditing) {
+      const updatedData = [...data];
+      updatedData[editIndex] = editData;
+      setData(updatedData);
+      setEditIndex(null);
+      setEditData({ id: '', nama: '', jenis: '', merek: '', tanggal: '', jumlah: '' });
+      setIsEditing(false);
+    } else {
+      const newData = {
+        id: data.length + 1,
+        nama: editData.nama,
+        jenis: editData.jenis,
+        merek: editData.merek,
+        tanggal: editData.tanggal,
+        jumlah: editData.jumlah
+      };
+      setData([...data, newData]);
+      setEditData({ id: '', nama: '', jenis: '', merek: '', tanggal: '', jumlah: '' });
+    }
+  };
+
+  const handleEdit = (index) => {
+    setIsEditing(true);
+    setEditIndex(index);
+    const dataToEdit = data[index];
+    setEditData({ ...dataToEdit });
+  };
+
+  const handleDelete = (index) => {
+    if (window.confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+      const newData = [...data];
+      newData.splice(index, 1);
+      setData(newData);
+    }
+  };
 
   return (
     <Container>
       <FormContainer>
         <h3>Mengelola Data Pemasok</h3>
-        <Input type="text" placeholder="Nama Pemasok" />
-        <Input type="text" placeholder="Jenis Obat" />
-        <Input type="text" placeholder="Merek Obat" />
-        <Input type="text" placeholder="Tanggal di Pasok" />
-        <Input type="text" placeholder="Jumlah Obat" />
-        <AddButton>Tambah</AddButton>
+        <Input
+          type="text"
+          name="nama"
+          placeholder="Nama Pemasok"
+          value={editData.nama}
+          onChange={handleInputChange}
+        />
+        <Input
+          type="text"
+          name="jenis"
+          placeholder="Jenis Obat"
+          value={editData.jenis}
+          onChange={handleInputChange}
+        />
+        <Input
+          type="text"
+          name="merek"
+          placeholder="Merek Obat"
+          value={editData.merek}
+          onChange={handleInputChange}
+        />
+        <Input
+          type="text"
+          name="tanggal"
+          placeholder="Tanggal di Pasok"
+          value={editData.tanggal}
+          onChange={handleInputChange}
+        />
+        <Input
+          type="text"
+          name="jumlah"
+          placeholder="Jumlah Obat"
+          value={editData.jumlah}
+          onChange={handleInputChange}
+        />
+        <AddButton onClick={handleAdd}>{isEditing ? 'Simpan' : 'Tambah'}</AddButton>
       </FormContainer>
       <Table>
         <thead>
@@ -128,8 +211,8 @@ const DataPemasok = () => {
               <Td>{row.jumlah}</Td>
               <Td>
                 <ButtonContainer>
-                  <EditButton>Edit</EditButton>
-                  <DeleteButton>Hapus</DeleteButton>
+                  <EditButton onClick={() => handleEdit(index)}>Edit</EditButton>
+                  <DeleteButton onClick={() => handleDelete(index)}>Hapus</DeleteButton>
                 </ButtonContainer>
               </Td>
             </tr>

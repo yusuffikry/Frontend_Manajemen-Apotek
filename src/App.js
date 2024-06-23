@@ -11,7 +11,6 @@ import ManageUsers from './pagesAdmin/ManageUsers';
 import StokObat from './pagesAdmin/StokObat';
 import DataPemasok from './pagesAdmin/DataPemasok';
 import TransaksiPenjualan from './pagesAdmin/TransaksiPenjualan';
-import DataKaryawan from './pagesAdmin/DataKaryawan';
 import DashboardUser from './pagesUsers/DashboardUsers';
 import EditProfile from './pagesUsers/EditProfile';
 import PenjualanObat from './pagesUsers/PenjualanObat';
@@ -41,7 +40,6 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/manage-users" element={<ManageUsers />} />
-          <Route path="/admin/data-karyawan" element={<DataKaryawan />} />
           <Route path="/admin/data-pemasok" element={<DataPemasok />} />
           <Route path="/admin/stok-obat" element={<StokObat />} />
           <Route path="/admin/transaksi-penjualan" element={<TransaksiPenjualan />} />

@@ -52,9 +52,9 @@ const LoginButton = styled(ActionButton)`
   background-color: #26355D; /* Warna default untuk tombol Login */
 `;
 
-const RegisterButton = styled(ActionButton)`
-  background-color: #2980b9; /* Warna default untuk tombol Register */
-`;
+// const RegisterButton = styled(ActionButton)`
+//   background-color: #2980b9; /* Warna default untuk tombol Register */
+// `;
 
 const MainDashboard = () => {
   return (
@@ -65,9 +65,9 @@ const MainDashboard = () => {
         <Link to="/login">
           <LoginButton>Login</LoginButton>
         </Link>
-        <Link to="/register">
+        {/* <Link to="/register">
           <RegisterButton>Register</RegisterButton>
-        </Link>
+        </Link> */}
       </ContentWrapper>
     </DashboardContainer>
   );

@@ -70,7 +70,7 @@ const Navbar = () => {
         {isAdmin && (
           <>
             <NavItem to="/admin/manage-users" activeClassName="active">Manage Users</NavItem>
-            <NavItem to="/admin/data-karyawan" activeClassName="active">Data Karyawan</NavItem>
+            {/* <NavItem to="/admin/data-karyawan" activeClassName="active">Data Karyawan</NavItem> */}
             <NavItem to="/admin/data-pemasok" activeClassName="active">Data Pemasok</NavItem>
             <NavItem to="/admin/stok-obat" activeClassName="active">Stok Obat</NavItem>
             <NavItem to="/admin/transaksi-penjualan" activeClassName="active">Transaksi Penjualan</NavItem>
