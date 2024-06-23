@@ -25,18 +25,40 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  width: 100%;
-  padding: 0.5rem;
-  margin: 0;
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 5px;
-  background-color: #1abc9c;
   color: white;
   font-size: 1rem;
   cursor: pointer;
   
   &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const AddButton = styled(Button)`
+  width: 100%;
+  background-color: #1abc9c;
+
+  &:hover {
     background-color: #16a085;
+  }
+`;
+
+const EditButton = styled(Button)`
+  background-color: #1abc9c;
+
+  &:hover {
+    background-color: #16a085;
+  }
+`;
+
+const DeleteButton = styled(Button)`
+  background-color: #e74c3c;
+
+  &:hover {
+    background-color: #c0392b;
   }
 `;
 
@@ -77,8 +99,6 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  width: 30%; /* Sesuaikan dengan lebar yang diinginkan */
-  margin: 0 auto; /* Auto margin untuk memposisikan secara horizontal di tengah */
 `;
 
 const Title = styled.h2`
@@ -103,7 +123,7 @@ const DataKaryawan = () => {
         <Input type="text" placeholder="Nama" />
         <Input type="text" placeholder="Alamat" />
         <Input type="text" placeholder="Nomor Telepon" />
-        <Button>Tambah Karyawan</Button>
+        <AddButton>Tambah Karyawan</AddButton>
       </FormContainer>
       
       <TableContainer>
@@ -125,7 +145,8 @@ const DataKaryawan = () => {
                 <TableCellBody>{row.phone}</TableCellBody>
                 <TableCellBody>
                   <ButtonContainer>
-                    <Button>Hapus</Button>
+                    <EditButton>Edit</EditButton>
+                    <DeleteButton>Hapus</DeleteButton>
                   </ButtonContainer>
                 </TableCellBody>
               </TableRow>

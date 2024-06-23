@@ -36,12 +36,27 @@ const Button = styled.button`
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 5px;
-  background-color: #1abc9c;
   color: white;
   cursor: pointer;
 
   &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const EditButton = styled(Button)`
+  background-color: #1abc9c;
+
+  &:hover {
     background-color: #16a085;
+  }
+`;
+
+const DeleteButton = styled(Button)`
+  background-color: #e74c3c;
+
+  &:hover {
+    background-color: #c0392b;
   }
 `;
 
@@ -73,8 +88,8 @@ const TransaksiPenjualan = () => {
               <td>{row.total_pembayaran}</td>
               <td>
                 <ButtonContainer>
-                  <Button>Edit</Button>
-                  <Button>Delete</Button>
+                  <EditButton>Edit</EditButton>
+                  <DeleteButton>Delete</DeleteButton>
                 </ButtonContainer>
               </td>
             </tr>

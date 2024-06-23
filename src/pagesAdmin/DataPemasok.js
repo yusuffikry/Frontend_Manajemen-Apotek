@@ -13,7 +13,7 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 900px; /* Contoh atur lebar maksimum menjadi 600px */
+  max-width: 900px; /* Contoh atur lebar maksimum menjadi 900px */
   width: 100%; /* Agar FormContainer mengisi lebar kontainer induk */
 `;
 
@@ -27,18 +27,40 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  width: 50%; /* Menggunakan lebar 100% agar mengisi seluruh kontainer */
-  padding: 0.5rem;
-  margin: 0.5rem 0;
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 5px;
-  background-color: #1abc9c;
   color: white;
   font-size: 1rem;
   cursor: pointer;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const AddButton = styled(Button)`
+  width: 50%; /* Menggunakan lebar 50% agar mengisi setengah kontainer */
+  background-color: #1abc9c;
 
   &:hover {
     background-color: #16a085;
+  }
+`;
+
+const EditButton = styled(Button)`
+  background-color: #1abc9c;
+
+  &:hover {
+    background-color: #16a085;
+  }
+`;
+
+const DeleteButton = styled(Button)`
+  background-color: #e74c3c;
+
+  &:hover {
+    background-color: #c0392b;
   }
 `;
 
@@ -60,23 +82,33 @@ const Td = styled.td`
   padding: 8px;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+`;
+
 const DataPemasok = () => {
+  const data = [
+    { id: 1, nama: 'Yuta', jenis: 'Tablet', merek: 'Rp20.000', tanggal: '14 Jan, 10.40 PM', jumlah: 450 }
+  ];
+
   return (
     <Container>
       <FormContainer>
-      <h2>Mengelola Data Pemasok</h2>
+        <h2>Mengelola Data Pemasok</h2>
         <Input type="text" placeholder="Nama Pemasok" />
         <Input type="text" placeholder="Jenis Obat" />
         <Input type="text" placeholder="Merek Obat" />
         <Input type="text" placeholder="Tanggal di Pasok" />
         <Input type="text" placeholder="Jumlah Obat" />
-        <Button>Tambah Stok Obat</Button>
+        <AddButton>Tambah Stok Obat</AddButton>
       </FormContainer>
       <Table>
         <thead>
           <tr>
             <Th>ID</Th>
-            <Th>Name</Th>
+            <Th>Nama</Th>
             <Th>Jenis</Th>
             <Th>Merek</Th>
             <Th>Tanggal</Th>
@@ -85,16 +117,22 @@ const DataPemasok = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <Td>1</Td>
-            <Td>Yuta</Td>
-            <Td>Tablet</Td>
-            <Td>Rp20.000</Td>
-            <Td>14 Jan, 10.40 PM</Td>
-            <Td>450</Td>
-            <Td><button>🗑️</button></Td>
-          </tr>
-          {/* Tambahkan baris lainnya sesuai kebutuhan */}
+          {data.map((row, index) => (
+            <tr key={index}>
+              <Td>{row.id}</Td>
+              <Td>{row.nama}</Td>
+              <Td>{row.jenis}</Td>
+              <Td>{row.merek}</Td>
+              <Td>{row.tanggal}</Td>
+              <Td>{row.jumlah}</Td>
+              <Td>
+                <ButtonContainer>
+                  <EditButton>Edit</EditButton>
+                  <DeleteButton>Hapus</DeleteButton>
+                </ButtonContainer>
+              </Td>
+            </tr>
+          ))}
         </tbody>
       </Table>
     </Container>
