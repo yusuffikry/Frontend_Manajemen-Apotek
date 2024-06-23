@@ -1,7 +1,6 @@
-// File: Register.js
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import backgroundImage from './bg_apotek.jpeg'; // Sesuaikan dengan path gambar latar belakang yang benar
 
 const RegisterContainer = styled.div`
@@ -21,8 +20,9 @@ const RegisterForm = styled.form`
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   color: white;
-  width: 700px;
-  max-width: 100%; /* Ensure it doesn't exceed 90% of the viewport width */
+  width: 600px; /* Adjust the width as needed */
+  max-width: 90%; /* Ensure it doesn't exceed 90% of the viewport width */
+  position: relative; /* Ensure relative positioning for child elements */
 `;
 
 const Title = styled.h1`
@@ -60,6 +60,22 @@ const LoginLink = styled.p`
   font-size: 1.5rem;
 `;
 
+const ArrowBack = styled(Link)`
+  position: absolute;
+  top: 55px; /* Adjust top position */
+  left: 35px; /* Adjust left position */
+  color: white;
+  font-size: 1.5rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+`;
+
+const BackIcon = styled.svg`
+  margin-right: 5px; /* Add space between icon and text */
+  vertical-align: middle; /* Align icon vertically with text */
+`;
+
 const Register = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
@@ -67,9 +83,9 @@ const Register = () => {
   const [password, setPassword] = useState('');
 
   const handleRegister = (e) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault();
     // Implement register logic here
-    // Example: Save user data and navigate to login
+    // For example, save user data and navigate to login
     localStorage.setItem('user', JSON.stringify({ name, email, password }));
     navigate('/login');
   };
@@ -77,6 +93,11 @@ const Register = () => {
   return (
     <RegisterContainer>
       <RegisterForm onSubmit={handleRegister}>
+        <ArrowBack to="/">
+          <BackIcon xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+          </BackIcon>
+        </ArrowBack>
         <Title>Register</Title>
         <Input
           type="text"
@@ -100,7 +121,7 @@ const Register = () => {
           required
         />
         <Button type="submit">Daftar</Button>
-        <LoginLink>Sudah punya akun? <a href="/login" style={{ color: 'white', textDecoration: 'underline' }}>Login</a></LoginLink>
+        <LoginLink>Sudah punya akun? <Link to="/login" style={{ color: 'white', textDecoration: 'underline' }}>Login</Link></LoginLink>
       </RegisterForm>
     </RegisterContainer>
   );

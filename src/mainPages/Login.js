@@ -1,11 +1,11 @@
-// File: Login.js
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import backgroundImage from './bg_apotek.jpeg'; // Sesuaikan dengan path gambar latar belakang yang benar
 
 const LoginContainer = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -15,6 +15,7 @@ const LoginContainer = styled.div`
 `;
 
 const LoginForm = styled.form`
+  position: relative; /* Ensure relative positioning for child elements */
   background-color: rgba(70, 122, 164, 0.8); /* Blue semi-transparent background */
   padding: 2rem;
   border-radius: 10px;
@@ -27,6 +28,7 @@ const LoginForm = styled.form`
 
 const Title = styled.h1`
   margin-bottom: 3rem;
+  display: inline-block; /* Ensure block-level element behavior */
 `;
 
 const Input = styled.input`
@@ -60,6 +62,22 @@ const RegisterLink = styled.p`
   font-size: 1.5rem;
 `;
 
+const ArrowBack = styled(Link)`
+  position: absolute;
+  top: 55px;
+  left: 35px; /* Adjust left position to place arrow icon */
+  color: white;
+  font-size: 1.5rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+`;
+
+const BackIcon = styled.svg`
+  margin-right: 5px; /* Add space between icon and text */
+  vertical-align: middle; /* Align icon vertically with text */
+`;
+
 const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -79,6 +97,11 @@ const Login = ({ setIsAuthenticated }) => {
   return (
     <LoginContainer>
       <LoginForm onSubmit={handleLogin}>
+        <ArrowBack to="/">
+          <BackIcon xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+          </BackIcon>
+        </ArrowBack>
         <Title>Login</Title>
         <Input
           type="email"
@@ -95,7 +118,7 @@ const Login = ({ setIsAuthenticated }) => {
           required
         />
         <Button type="submit">Masuk</Button>
-        <RegisterLink>Belum punya akun? <a href="/register" style={{ color: 'white', textDecoration: 'underline' }}>Register</a></RegisterLink>
+        <RegisterLink>Belum punya akun? <Link to="/register" style={{ color: 'white', textDecoration: 'underline' }}>Register</Link></RegisterLink>
       </LoginForm>
     </LoginContainer>
   );
