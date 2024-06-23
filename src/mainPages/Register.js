@@ -1,27 +1,32 @@
+// File: Register.js
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import backgroundImage from './bg_apotek.jpeg'; // Sesuaikan dengan path gambar latar belakang yang benar
 
 const RegisterContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #3498db;
+  background-image: url(${backgroundImage}); /* Set background image */
+  background-size: cover; /* Cover the entire container */
+  background-position: center; /* Center the background image */
 `;
 
 const RegisterForm = styled.form`
-  background-color: #467aa4;
+  background-color: rgba(70, 122, 164, 0.8); /* Blue semi-transparent background */
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   color: white;
-  width: 500px;
+  width: 700px;
+  max-width: 100%; /* Ensure it doesn't exceed 90% of the viewport width */
 `;
 
-const Title = styled.h2`
-  margin-bottom: 1rem;
+const Title = styled.h1`
+  margin-bottom: 2rem;
 `;
 
 const Input = styled.input`
@@ -31,18 +36,18 @@ const Input = styled.input`
   margin: 10px auto;
   border: none;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 1.5rem;
 `;
 
 const Button = styled.button`
-  width: calc(100% - 20px); /* Account for padding */
+  width: 100%; /* Account for padding */
   padding: 10px;
   margin: 10px auto;
   border: none;
   border-radius: 5px;
   background-color: #1abc9c;
   color: white;
-  font-size: 1rem;
+  font-size: 1.5rem;
   cursor: pointer;
   
   &:hover {
@@ -52,7 +57,7 @@ const Button = styled.button`
 
 const LoginLink = styled.p`
   margin-top: 1rem;
-  font-size: 0.9rem;
+  font-size: 1.5rem;
 `;
 
 const Register = () => {
