@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 const NavbarContainer = styled.div`
   background-color: #3498db;
-  padding: 3rem 2rem;
+  padding: 2rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -18,7 +18,7 @@ const NavLinks = styled.div`
 const NavItem = styled(NavLink)`
   color: white;
   text-decoration: none;
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-right: 5px;
   padding: 8px 16px;
 
@@ -44,7 +44,7 @@ const LogoutButton = styled.button`
   background-color: transparent;
   color: white;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
 
   &:hover {
@@ -53,23 +53,36 @@ const LogoutButton = styled.button`
 `;
 
 const Navbar = () => {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
+  const isUser = location.pathname.startsWith('/user');
+
   const handleLogout = () => {
     console.log('Logout button clicked');
   };
 
   return (
     <NavbarContainer>
-      <Brand to="/admin" exact>Admin Dashboard</Brand>
+      <Brand to={isAdmin ? "/admin" : "/user"} exact>
+        {isAdmin ? "Admin Dashboard" : "User Dashboard"}
+      </Brand>
       <NavLinks>
-        <NavItem to="/admin/manage-users" activeClassName="active">Manage Users</NavItem>
-        <NavItem to="/admin/data-karyawan" activeClassName="active">Data Karyawan</NavItem>
-        <NavItem to="/admin/data-pemasok" activeClassName="active">Data Pemasok</NavItem>
-        <NavItem to="/admin/stok-obat" activeClassName="active">Stok Obat</NavItem>
-        <NavItem to="/admin/transaksi-penjualan" activeClassName="active">Transaksi Penjualan</NavItem>
+        {isAdmin && (
+          <>
+            <NavItem to="/admin/manage-users" activeClassName="active">Manage Users</NavItem>
+            <NavItem to="/admin/data-karyawan" activeClassName="active">Data Karyawan</NavItem>
+            <NavItem to="/admin/data-pemasok" activeClassName="active">Data Pemasok</NavItem>
+            <NavItem to="/admin/stok-obat" activeClassName="active">Stok Obat</NavItem>
+            <NavItem to="/admin/transaksi-penjualan" activeClassName="active">Transaksi Penjualan</NavItem>
+          </>
+        )}
+        {isUser && (
+          <>
+            <NavItem to="/user/penjualan-obat" activeClassName="active">Penjualan Obat</NavItem>
+            <NavItem to="/user/edit-profile" activeClassName="active">Profile</NavItem>
+          </>
+        )}
         <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
-
-        <NavItem to="/user/penjualan-obat" activeClassName="active">Penjualan Obat</NavItem>
-        <NavItem to="/user/edit-profile" activeClassName="active">Profile</NavItem>
       </NavLinks>
     </NavbarContainer>
   );

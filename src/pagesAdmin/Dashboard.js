@@ -5,7 +5,7 @@ const CenteredContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50vh; /* Set to full viewport height */
+  height: 70vh; /* Set to full viewport height */
 `;
 
 const DashboardContainer = styled.div`
@@ -15,7 +15,7 @@ const DashboardContainer = styled.div`
 `;
 
 const DashboardTitle = styled.h1`
-  font-size: 3.5rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
 `;
 
@@ -24,8 +24,8 @@ const Dashboard = () => {
     <CenteredContainer>
       <DashboardContainer>
         <DashboardTitle>Welcome to the Admin Dashboard</DashboardTitle>
-        <p style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Hello, Admin! Welcome back to your dashboard. Here you can manage the system, view analytics, and perform administrative tasks.</p>
-        <p style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Please use the navigation menu to access different sections of the admin panel.</p>
+        <p style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>Hello, Admin! Welcome back to your dashboard. Here you can manage the system, view analytics, and perform administrative tasks.</p>
+        <p style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>Please use the navigation menu to access different sections of the admin panel.</p>
       </DashboardContainer>
     </CenteredContainer>
   );

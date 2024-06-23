@@ -7,13 +7,13 @@ const Container = styled.div`
 
 const FormContainer = styled.div`
   background-color: #467aa4;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 10px;
   margin: 2rem auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 900px; /* Contoh atur lebar maksimum menjadi 900px */
+  max-width: 600px; /* Contoh atur lebar maksimum menjadi 900px */
   width: 100%; /* Agar FormContainer mengisi lebar kontainer induk */
 `;
 
@@ -23,7 +23,7 @@ const Input = styled.input`
   margin: 0.5rem 0;
   border: none;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 0.8rem;
 `;
 
 const Button = styled.button`
@@ -42,6 +42,7 @@ const Button = styled.button`
 const AddButton = styled(Button)`
   width: 50%; /* Menggunakan lebar 50% agar mengisi setengah kontainer */
   background-color: #1abc9c;
+  margin-top: 1rem;
 
   &:hover {
     background-color: #16a085;
@@ -96,7 +97,7 @@ const StokObat = () => {
   return (
     <Container>
       <FormContainer>
-        <h2>Mengelola Stok Obat</h2>
+        <h3>Mengelola Stok Obat</h3>
         <Input type="text" placeholder="Nama obat" />
         <Input type="text" placeholder="Jenis Obat" />
         <Input type="text" placeholder="Harga" />

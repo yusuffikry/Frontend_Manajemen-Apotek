@@ -22,12 +22,12 @@ const LoginForm = styled.form`
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   color: white;
-  width: 600px; /* Adjust the width as needed */
+  width: 500px; /* Adjust the width as needed */
   max-width: 90%; /* Ensure it doesn't exceed 90% of the viewport width */
 `;
 
 const Title = styled.h1`
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   display: inline-block; /* Ensure block-level element behavior */
 `;
 
@@ -38,7 +38,7 @@ const Input = styled.input`
   margin: 10px auto;
   border: none;
   border-radius: 5px;
-  font-size: 1.5rem;
+  font-size: 1rem;
 `;
 
 const Button = styled.button`
@@ -49,7 +49,7 @@ const Button = styled.button`
   border-radius: 5px;
   background-color: #1abc9c;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1rem;
   cursor: pointer;
   
   &:hover {
@@ -59,7 +59,7 @@ const Button = styled.button`
 
 const RegisterLink = styled.p`
   margin-top: 1rem;
-  font-size: 1.5rem;
+  font-size: 1rem;
 `;
 
 const ArrowBack = styled(Link)`

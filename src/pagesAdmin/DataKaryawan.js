@@ -7,10 +7,10 @@ const DataKaryawanContainer = styled.div`
 
 const FormContainer = styled.div`
   background-color: #467aa4;
-  padding: 3.5rem;
+  padding: 2rem;
   border-radius: 10px;
   margin: 1rem auto;  /* Centers the form */
-  max-width: 1000px;  /* Sets the maximum width of the form */
+  max-width: 600px;  /* Sets the maximum width of the form */
   width: 100%;
 `;
 
@@ -21,7 +21,7 @@ const Input = styled.input`
   margin: 1.5rem 0;
   border: none;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 0.8rem;
 `;
 
 const Button = styled.button`
@@ -29,7 +29,7 @@ const Button = styled.button`
   border: none;
   border-radius: 5px;
   color: white;
-  font-size: 1rem;
+  font-size: 0.8rem;
   cursor: pointer;
   
   &:hover {
@@ -101,7 +101,7 @@ const ButtonContainer = styled.div`
   gap: 0.5rem;
 `;
 
-const Title = styled.h2`
+const Title = styled.h3`
   text-align: center; /* Center align the title */
   margin-top: 0rem; /* Adjust margin top */
 `;
@@ -127,7 +127,7 @@ const DataKaryawan = () => {
       </FormContainer>
       
       <TableContainer>
-        <h2>Daftar Karyawan</h2>
+        <h3>Daftar Karyawan</h3>
         <Table>
           <TableHead>
             <tr>

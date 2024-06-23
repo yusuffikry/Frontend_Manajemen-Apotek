@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const TableContainer = styled.div`
   width: 100%;
-  max-width: 2100px; /* Atur lebar maksimum tabel */
+  max-width: 1300px; /* Atur lebar maksimum tabel */
   margin: 2rem auto; /* Pusatkan tabel dengan margin atas dan bawah 2rem */
 `;
 
@@ -72,7 +72,7 @@ const ManageUsers = () => {
 
   return (
     <TableContainer>
-      <h1>Manage Users</h1>
+      <h3>Manage Users</h3>
       <Table>
         <thead>
           <Tr>

@@ -22,7 +22,7 @@ const ContentWrapper = styled.div`
 `;
 
 const MainTitle = styled.h1`
-  font-size: 5rem;
+  font-size: 3rem;
   margin-bottom: 20px; /* Atur margin bottom untuk membuat jarak dengan h3 */
 `;
 
@@ -32,7 +32,7 @@ const SubTitle = styled.h3`
 
 const ActionButton = styled.button`
   margin: 10px;
-  padding: 20px 40px;
+  padding: 10px 30px;
   font-size: 1.5rem; /* Adjust font size as needed */
   color: white;
   border: none;

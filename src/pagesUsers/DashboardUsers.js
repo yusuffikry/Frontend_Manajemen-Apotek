@@ -5,7 +5,7 @@ const CenteredContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50vh; /* Set to full viewport height */
+  height: 70vh; /* Set to full viewport height */
 `;
 
 const DashboardContainer = styled.div`
@@ -14,13 +14,13 @@ const DashboardContainer = styled.div`
   width: 100%; /* Ensure full width */
 `;
 
-const DashboardTitle = styled.h1`
-  font-size: 3.5rem;
+const DashboardTitle = styled.h3`
+  font-size: 2.5rem;
   margin-bottom: 1rem;
 `;
 
 const DashboardText = styled.p`
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-bottom: 0.5rem;
 `;
 

@@ -6,7 +6,7 @@ const ProfileContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 60vh;
+  height: 70vh;
   padding: 20px;
 `;
 
@@ -15,13 +15,13 @@ const ProfileDetails = styled.div`
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  width: 600px; /* Adjust the width as needed */
+  width: 500px; /* Adjust the width as needed */
   max-width: 60%;
   text-align: left; /* Align text to the left for better readability */
 `;
 
-const Title = styled.h1`
-  margin-bottom: 2rem;
+const Title = styled.h2`
+  margin-bottom: 1rem;
   text-align: center;
 `;
 
@@ -61,7 +61,7 @@ const EditProfileContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 70vh;
+  height: 80vh;
 `;
 
 const EditProfileForm = styled.form`
