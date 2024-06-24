@@ -61,7 +61,7 @@ const MainDashboard = () => {
     <DashboardContainer>
       <ContentWrapper>
         <MainTitle>ApotekCare</MainTitle>
-        <SubTitle>Aplikasi manajemen apotek untuk mempermudah pengelolaan stok obat dan transaksi penjualan.</SubTitle>
+        <SubTitle>An application for pharmacy management to facilitate the administration of medicine stocks and sales transactions.</SubTitle>
         <Link to="/login">
           <LoginButton>Login</LoginButton>
         </Link>

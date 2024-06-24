@@ -11,7 +11,6 @@ const Table = styled.table`
   width: 100%;
   max-width: 100%;
   border-collapse: collapse;
-  display: ${(props) => (props.isHidden ? 'none' : 'table')}; /* Hide table if isHidden prop is true */
 `;
 
 const Th = styled.th`
@@ -49,14 +48,32 @@ const Button = styled.button`
   border-radius: 5px;
   color: white;
   cursor: pointer;
+  margin-top: 0.5rem;
 `;
 
 const AddUserButton = styled(Button)`
-  background-color: #3498db;
+  background-color: #1abc9c;
   margin-bottom: 1rem;
 
   &:hover {
     background-color: #2980b9;
+  }
+`;
+
+const SaveButton = styled(Button)`
+  background-color: #2ecc71;
+  margin-right: 0.5rem;
+
+  &:hover {
+    background-color: #27ae60;
+  }
+`;
+
+const CancelButton = styled(Button)`
+  background-color: #95a5a6;
+
+  &:hover {
+    background-color: #7f8c8d;
   }
 `;
 
@@ -79,21 +96,33 @@ const DeleteButton = styled(Button)`
 `;
 
 const FormContainer = styled.div`
-  background-color: #f4f4f4;
+  background-color: #467aa4;
   padding: 1.5rem;
   border-radius: 10px;
-  margin: 1rem auto;
+  margin: 1.5rem auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   max-width: 600px;
-  width: 100%;
+`;
+
+const FormTitle = styled.h3`
+`;
+
+const InputContainer = styled.div`
+  width: 90%;
+  margin-bottom: 0.5rem;
+  align-items: flex-start;
+`;
+
+const Label = styled.label`
+  color: white;
 `;
 
 const Input = styled.input`
-  width: calc(100% - 1rem); /* Adjusting width to account for padding */
+  width: 100%;
   padding: 0.5rem;
-  margin: 0.5rem 0;
+  margin: 0.1rem 0;
   border: none;
   border-radius: 5px;
   font-size: 0.8rem;
@@ -113,7 +142,7 @@ const ManageUsers = () => {
     email: '',
     address: '',
     role: '',
-    password: '' // Added password field
+    password: ''
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -123,7 +152,7 @@ const ManageUsers = () => {
     email: '',
     address: '',
     role: '',
-    password: '' // Added password field
+    password: ''
   });
 
   const handleInputChange = (e) => {
@@ -167,50 +196,73 @@ const ManageUsers = () => {
     setIsAdding(true); // Show the form
   };
 
+  const handleCancel = () => {
+    setIsAdding(false);
+    setIsEditing(false);
+    setNewUser({ name: '', email: '', address: '', role: '', password: '' });
+    setEditUser({ name: '', email: '', address: '', role: '', password: '' });
+  };
+
   return (
     <TableContainer>
       <h3>Manage Users</h3>
-      <RightButtonContainer>
-        <AddUserButton onClick={() => {
-          setIsAdding(!isAdding);
-          setIsEditing(false);
-          setEditIndex(null);
-          setEditUser({ name: '', email: '', address: '', role: '', password: '' });
-        }}>
-          {isAdding || isEditing ? 'Cancel' : 'Add User'}
-        </AddUserButton>
-      </RightButtonContainer>
-      {(isAdding || isEditing) ? (
+      {!isAdding && !isEditing && ( // Conditionally render the Add button
+        <RightButtonContainer>
+          <AddUserButton onClick={() => {
+            setIsAdding(true);
+            setIsEditing(false);
+            setEditIndex(null);
+            setEditUser({ name: '', email: '', address: '', role: '', password: '' });
+          }}>
+            Add User
+          </AddUserButton>
+        </RightButtonContainer>
+      )}
+      {(isAdding || isEditing) && (
         <FormContainer>
-          <Input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={isEditing ? editUser.name : newUser.name}
-            onChange={handleInputChange}
-          />
-          <Input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={isEditing ? editUser.email : newUser.email}
-            onChange={handleInputChange}
-          />
-          <Input
-            type="text"
-            name="address"
-            placeholder="Address"
-            value={isEditing ? editUser.address : newUser.address}
-            onChange={handleInputChange}
-          />
-          <Input
-            type="text"
-            name="role"
-            placeholder="Role"
-            value={isEditing ? editUser.role : newUser.role}
-            onChange={handleInputChange}
-          />
-          {isAdding || isEditing ? ( // Display password input only when adding or editing
+          <FormTitle>{isEditing ? 'Edit User' : 'Add User'}</FormTitle>
+          <InputContainer>
+            <Label>Name</Label>
+            <Input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={isEditing ? editUser.name : newUser.name}
+              onChange={handleInputChange}
+            />
+          </InputContainer>
+          <InputContainer>
+            <Label>Email</Label>
+            <Input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={isEditing ? editUser.email : newUser.email}
+              onChange={handleInputChange}
+            />
+          </InputContainer>
+          <InputContainer>
+            <Label>Address</Label>
+            <Input
+              type="text"
+              name="address"
+              placeholder="Address"
+              value={isEditing ? editUser.address : newUser.address}
+              onChange={handleInputChange}
+            />
+          </InputContainer>
+          <InputContainer>
+            <Label>Role</Label>
+            <Input
+              type="text"
+              name="role"
+              placeholder="Role"
+              value={isEditing ? editUser.role : newUser.role}
+              onChange={handleInputChange}
+            />
+          </InputContainer>
+          <InputContainer>
+            <Label>Password</Label>
             <Input
               type="password"
               name="password"
@@ -218,11 +270,14 @@ const ManageUsers = () => {
               value={isEditing ? editUser.password : newUser.password}
               onChange={handleInputChange}
             />
-          ) : null}
-          <AddUserButton onClick={handleAddUser}>{isEditing ? 'Save Changes' : 'Add User'}</AddUserButton>
+          </InputContainer>
+          <ButtonContainer>
+            <SaveButton onClick={handleAddUser}>{isEditing ? 'Save Changes' : 'Add User'}</SaveButton>
+            <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+          </ButtonContainer>
         </FormContainer>
-      ) : null}
-      <Table isHidden={isAdding || isEditing}>
+      )}
+      <Table>
         <thead>
           <Tr>
             <Th>Name</Th>
@@ -241,7 +296,7 @@ const ManageUsers = () => {
               <Td>{row.role}</Td>
               <Td>
                 <ButtonContainer>
-                  <EditButton onClick={() => handleEditUser(index)}>Edit</EditButton>
+                  <EditButton onClick={() => handleEditUser(index)}>Update</EditButton>
                   <DeleteButton onClick={() => handleDeleteUser(index)}>Delete</DeleteButton>
                 </ButtonContainer>
               </Td>

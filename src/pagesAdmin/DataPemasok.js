@@ -66,16 +66,17 @@ const DeleteButton = styled(Button)`
 `;
 
 const Table = styled.table`
-  width: 90%;
+  width: 80%;
   border-collapse: collapse;
-  margin: 2rem auto;
+  margin: 2rem auto; /* Center horizontally with auto margins */
+  text-align: center; /* Center align text in all table cells */
 `;
 
 const Th = styled.th`
   border: 1px solid #ddd;
   padding: 8px;
   background-color: #f2f2f2;
-  text-align: left;
+  text-align: center;
 `;
 
 const Td = styled.td`
@@ -134,7 +135,7 @@ const DataPemasok = () => {
   };
 
   const handleDelete = (index) => {
-    if (window.confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+    if (window.confirm('Are you sure you want to delete this item?')) {
       const newData = [...data];
       newData.splice(index, 1);
       setData(newData);
@@ -144,29 +145,29 @@ const DataPemasok = () => {
   return (
     <Container>
       <FormContainer>
-        <h3>Mengelola Data Pemasok</h3>
+        <h3>Managing Supplier Data</h3>
         <Input
           type="text"
-          name="nama"
-          placeholder="Nama Perusahaan"
+          name="name"
+          placeholder="Company name"
           value={editData.nama}
           onChange={handleInputChange}
         />
         <Input
           type="text"
-          name="telepon"
-          placeholder="Nomor Telepon"
+          name="phone"
+          placeholder="Phone Number"
           value={editData.telepon}
           onChange={handleInputChange}
         />
-        <AddButton onClick={handleAdd}>{isEditing ? 'Simpan' : 'Tambah'}</AddButton>
+        <AddButton onClick={handleAdd}>{isEditing ? 'Save' : 'Add'}</AddButton>
       </FormContainer>
       <Table>
         <thead>
           <tr>
             <Th>ID</Th>
-            <Th>Nama Perusahaan</Th>
-            <Th>Nomor Telepon</Th>
+            <Th>Company Name</Th>
+            <Th>Phone Number</Th>
             <Th>Action</Th>
           </tr>
         </thead>
@@ -178,8 +179,8 @@ const DataPemasok = () => {
               <Td>{row.telepon}</Td>
               <Td>
                 <ButtonContainer>
-                  <EditButton onClick={() => handleEdit(index)}>Edit</EditButton>
-                  <DeleteButton onClick={() => handleDelete(index)}>Hapus</DeleteButton>
+                  <EditButton onClick={() => handleEdit(index)}>Update</EditButton>
+                  <DeleteButton onClick={() => handleDelete(index)}>Delete</DeleteButton>
                 </ButtonContainer>
               </Td>
             </tr>

@@ -157,11 +157,11 @@ const UserProfile = () => {
     <ProfileContainer>
       <ProfileDetails>
         <Title>User Profile</Title>
-        <Detail><DetailLabel>Name:</DetailLabel> {username}</Detail>
-        <Detail><DetailLabel>Email:</DetailLabel> {email}</Detail>
-        <Detail><DetailLabel>Password:</DetailLabel> {password}</Detail>
-        <Detail><DetailLabel>Address:</DetailLabel> {address}</Detail>
-        <Button onClick={handleEditClick}>Edit Profile</Button>
+        <Detail><DetailLabel>Name :</DetailLabel> {username}</Detail>
+        <Detail><DetailLabel>Email :</DetailLabel> {email}</Detail>
+        <Detail><DetailLabel>Password :</DetailLabel> {password}</Detail>
+        <Detail><DetailLabel>Address :</DetailLabel> {address}</Detail>
+        <Button onClick={handleEditClick}>Update Profile</Button>
       </ProfileDetails>
     </ProfileContainer>
   );

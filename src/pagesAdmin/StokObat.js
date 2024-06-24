@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -13,12 +13,12 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 600px; /* Contoh atur lebar maksimum menjadi 900px */
-  width: 100%; /* Agar FormContainer mengisi lebar kontainer induk */
+  max-width: 600px;
+  width: 100%;
 `;
 
 const Input = styled.input`
-  width: 100%; /* Menggunakan lebar 100% agar mengisi seluruh kontainer */
+  width: 100%;
   padding: 0.5rem;
   margin: 0.5rem 0;
   border: none;
@@ -40,7 +40,7 @@ const Button = styled.button`
 `;
 
 const AddButton = styled(Button)`
-  width: 50%; /* Menggunakan lebar 50% agar mengisi setengah kontainer */
+  width: 50%;
   background-color: #1abc9c;
   margin-top: 1rem;
 
@@ -69,13 +69,14 @@ const Table = styled.table`
   width: 90%;
   border-collapse: collapse;
   margin: 2rem auto;
+  text-align: center;
 `;
 
 const Th = styled.th`
   border: 1px solid #ddd;
   padding: 8px;
   background-color: #f2f2f2;
-  text-align: left;
+  text-align: center;
 `;
 
 const Td = styled.td`
@@ -89,31 +90,76 @@ const ButtonContainer = styled.div`
   gap: 0.5rem;
 `;
 
-const StokObat = () => {
-  const data = [
-    { id: 1, nama: 'Yuta', jenis: 'Tablet', harga: 'Rp20.000', tanggal: '14 Jan, 10.40 PM', jumlah: 450 }
-  ];
+const MedicineInventory = () => {
+  const [data, setData] = useState([
+    { id: 1, name: 'Yuta', type: 'Tablet', price: 'Rp20,000', expiryDate: '14 Jan, 10:40 PM', quantity: 450 }
+  ]);
+
+  const [form, setForm] = useState({
+    id: '',
+    name: '',
+    type: '',
+    price: '',
+    expiryDate: '',
+    quantity: ''
+  });
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value
+    });
+  };
+
+  const handleAdd = () => {
+    setData([...data, { ...form, id: data.length + 1 }]);
+    setForm({ id: '', name: '', type: '', price: '', expiryDate: '', quantity: '' });
+  };
+
+  const handleEdit = (item) => {
+    setForm(item);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    setData(data.map(item => (item.id === form.id ? form : item)));
+    setForm({ id: '', name: '', type: '', price: '', expiryDate: '', quantity: '' });
+    setIsEditing(false);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm(`Are you sure you want to delete the medicine with ID ${id}?`)) {
+      setData(data.filter(item => item.id !== id));
+    }
+  };
 
   return (
     <Container>
       <FormContainer>
-        <h3>Mengelola Stok Obat</h3>
-        <Input type="text" placeholder="Nama obat" />
-        <Input type="text" placeholder="Jenis Obat" />
-        <Input type="text" placeholder="Harga" />
-        <Input type="text" placeholder="Tanggal Kadaluwarsa" />
-        <Input type="text" placeholder="Jumlah Obat" />
-        <AddButton>Tambah Stok Obat</AddButton>
+        <h3>Managing Medicine Inventory</h3>
+        <Input type="text" name="name" placeholder="Medicine Name" value={form.name} onChange={handleInputChange} />
+        <Input type="text" name="type" placeholder="Medicine Type" value={form.type} onChange={handleInputChange} />
+        <Input type="text" name="price" placeholder="Price" value={form.price} onChange={handleInputChange} />
+        <Input type="text" name="expiryDate" placeholder="Expiry Date" value={form.expiryDate} onChange={handleInputChange} />
+        <Input type="text" name="quantity" placeholder="Quantity" value={form.quantity} onChange={handleInputChange} />
+        {isEditing ? (
+          <AddButton onClick={handleSave}>Save Changes</AddButton>
+        ) : (
+          <AddButton onClick={handleAdd}>Add Medicine Stock</AddButton>
+        )}
       </FormContainer>
       <Table>
         <thead>
           <tr>
             <Th>ID</Th>
-            <Th>Nama</Th>
-            <Th>Jenis</Th>
-            <Th>Harga</Th>
-            <Th>Tanggal</Th>
-            <Th>Jumlah</Th>
+            <Th>Name</Th>
+            <Th>Type</Th>
+            <Th>Price</Th>
+            <Th>Expiry Date</Th>
+            <Th>Quantity</Th>
             <Th>Action</Th>
           </tr>
         </thead>
@@ -121,15 +167,15 @@ const StokObat = () => {
           {data.map((row, index) => (
             <tr key={index}>
               <Td>{row.id}</Td>
-              <Td>{row.nama}</Td>
-              <Td>{row.jenis}</Td>
-              <Td>{row.harga}</Td>
-              <Td>{row.tanggal}</Td>
-              <Td>{row.jumlah}</Td>
+              <Td>{row.name}</Td>
+              <Td>{row.type}</Td>
+              <Td>{row.price}</Td>
+              <Td>{row.expiryDate}</Td>
+              <Td>{row.quantity}</Td>
               <Td>
                 <ButtonContainer>
-                  <EditButton>Edit</EditButton>
-                  <DeleteButton>Hapus</DeleteButton>
+                  <EditButton onClick={() => handleEdit(row)}>Update</EditButton>
+                  <DeleteButton onClick={() => handleDelete(row.id)}>Delete</DeleteButton>
                 </ButtonContainer>
               </Td>
             </tr>
@@ -140,4 +186,4 @@ const StokObat = () => {
   );
 };
 
-export default StokObat;
+export default MedicineInventory;

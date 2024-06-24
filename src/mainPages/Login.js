@@ -102,7 +102,7 @@ const Login = ({ setIsAuthenticated }) => {
             <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
           </BackIcon>
         </ArrowBack>
-        <Title>Login</Title>
+        <Title>Form Login</Title>
         <Input
           type="email"
           placeholder="Email"
@@ -117,7 +117,7 @@ const Login = ({ setIsAuthenticated }) => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <Button type="submit">Masuk</Button>
+        <Button type="submit">Login</Button>
         {/* <RegisterLink>Belum punya akun? <Link to="/register" style={{ color: 'white', textDecoration: 'underline' }}>Register</Link></RegisterLink> */}
       </LoginForm>
     </LoginContainer>

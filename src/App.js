@@ -6,14 +6,12 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Dashboard from './pagesAdmin/Dashboard';
 import Login from './mainPages/Login';
-import Register from './mainPages/Register';
 import ManageUsers from './pagesAdmin/ManageUsers';
 import StokObat from './pagesAdmin/StokObat';
 import DataPemasok from './pagesAdmin/DataPemasok';
 import TransaksiPenjualan from './pagesAdmin/TransaksiPenjualan';
 import DashboardUser from './pagesUsers/DashboardUsers';
 import EditProfile from './pagesUsers/EditProfile';
-import PenjualanObat from './pagesUsers/PenjualanObat';
 import MainDashboard from './mainPages/MainDashboard'; // Import MainDashboard component
 
 const AppContainer = styled.div`
@@ -37,7 +35,6 @@ const App = () => {
         <Routes>
           <Route path="/" element={<MainDashboard />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/manage-users" element={<ManageUsers />} />
           <Route path="/admin/data-pemasok" element={<DataPemasok />} />
@@ -45,7 +42,7 @@ const App = () => {
           <Route path="/admin/transaksi-penjualan" element={<TransaksiPenjualan />} />
           <Route path="/user" element={<DashboardUser />} />
           <Route path="/user/edit-profile" element={<EditProfile />} />
-          <Route path="/user/penjualan-obat" element={<PenjualanObat />} />
+          <Route path="/user/transaksi-penjualan" element={<TransaksiPenjualan />} />
         </Routes>
       </MainContent>
       {!isAuthPage && <Footer />}

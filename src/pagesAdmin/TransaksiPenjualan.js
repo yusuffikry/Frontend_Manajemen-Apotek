@@ -44,6 +44,12 @@ const Button = styled.button`
   }
 `;
 
+const AddButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end; /* Align button to the right */
+  margin: 1rem 0;
+`;
+
 const AddButton = styled(Button)`
   background-color: #2ecc71;
 
@@ -77,25 +83,53 @@ const DeleteButton = styled(Button)`
 `;
 
 const DetailContainer = styled.div`
-  width: 90%;
-  margin: 2rem auto;
-  padding: 1rem;
+  width: 40%;
+  margin: 1rem auto;
+  padding: 1.5rem;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f4f4f4;
+  border-radius: 15px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const DetailTitle = styled.h3`
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
 `;
 
 const DetailItem = styled.p`
-  margin: 0.5rem 0;
+  margin: 1.2rem 0;
+  color: #555;
+  position: relative;
+
+  /* Underline effect */
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: -0.2rem; /* Adjust as needed */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #ddd;
+  }
+`;
+
+const DetailLabel = styled.span`
+  font-weight: bold;
 `;
 
 const FormContainer = styled.div`
-  width: 50%;
-  margin: 2rem auto;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f4f4f4;
+  background-color: #467aa4;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin: 1rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  max-width: 600px;
+  width: 100%;
+  text-align: center; /* Center text inside the container */
 `;
 
 const Input = styled.input`
@@ -106,6 +140,13 @@ const Input = styled.input`
   border-radius: 5px;
 `;
 
+const Label = styled.label`
+  width: 100%;
+  text-align: left;
+  margin: 0rem 0 0.25rem;
+  color: white;
+`;
+
 const CloseButton = styled(Button)`
   background-color: #95a5a6;
 
@@ -114,23 +155,23 @@ const CloseButton = styled(Button)`
   }
 `;
 
-const TransaksiPenjualan = () => {
+const SalesTransactions = () => {
   const [data, setData] = useState([
     {
       ID: 'user1',
-      tanggal_transaksi: '2024-06-21',
-      total_pembayaran: '50000',
-      id_obat: 'obat1',
-      jumlah_beli: '2',
-      harga_satuan: '25000'
+      transaction_date: '2024-06-21',
+      total_payment: '50000',
+      medicine_id: 'Medicine1',
+      quantuty_purchased: '2',
+      unit_price: '25000'
     },
     {
       ID: 'user2',
-      tanggal_transaksi: '2024-05-21',
-      total_pembayaran: '30000',
-      id_obat: 'obat2',
-      jumlah_beli: '1',
-      harga_satuan: '30000'
+      transaction_date: '2024-05-21',
+      total_payment: '30000',
+      medicine_id: 'Medicine2',
+      quantuty_purchased: '1',
+      unit_price: '30000'
     },
     // Add more sample data as needed
   ]);
@@ -139,12 +180,13 @@ const TransaksiPenjualan = () => {
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [newTransaction, setNewTransaction] = useState({
     ID: '',
-    tanggal_transaksi: '',
-    total_pembayaran: '',
-    id_obat: '',
-    jumlah_beli: '',
-    harga_satuan: ''
+    transaction_date: '',
+    total_payment: '',
+    medicine_id: '',
+    quantuty_purchased: '',
+    unit_price: ''
   });
+  const [showForm, setShowForm] = useState(false);
 
   const handleDetail = (transaction) => {
     setSelectedTransaction(transaction);
@@ -152,6 +194,7 @@ const TransaksiPenjualan = () => {
 
   const handleEdit = (transaction) => {
     setEditingTransaction(transaction);
+    setShowForm(true);
   };
 
   const handleDelete = (transaction) => {
@@ -189,77 +232,130 @@ const TransaksiPenjualan = () => {
       setData([...data, newTransaction]);
       setNewTransaction({
         ID: '',
-        tanggal_transaksi: '',
-        total_pembayaran: '',
-        id_obat: '',
-        jumlah_beli: '',
-        harga_satuan: ''
+        transaction_date: '',
+        total_payment: '',
+        medicine_id: '',
+        quantuty_purchased: '',
+        unit_price: ''
       });
     }
+    setShowForm(false); // Hide the form after saving
   };
 
   const handleCloseDetail = () => {
     setSelectedTransaction(null);
   };
 
+  const handleShowForm = () => {
+    setShowForm(true);
+    setEditingTransaction(null); // Clear any editing transaction data
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setNewTransaction({
+      ID: '',
+      transaction_date: '',
+      total_payment: '',
+      medicine_id: '',
+      quantuty_purchased: '',
+      unit_price: ''
+    });
+  };
+
   return (
     <TableContainer>
-      <h2>Transaksi Penjualan</h2>
-      <FormContainer>
-        <h3>{editingTransaction ? 'Edit Transaksi' : 'Add New Transaksi'}</h3>
-        <Input
-          type="text"
-          name="ID"
-          placeholder="ID"
-          value={editingTransaction ? editingTransaction.ID : newTransaction.ID}
-          onChange={handleInputChange}
-          disabled={editingTransaction}
-        />
-        <Input
-          type="text"
-          name="tanggal_transaksi"
-          placeholder="Tanggal Transaksi"
-          value={editingTransaction ? editingTransaction.tanggal_transaksi : newTransaction.tanggal_transaksi}
-          onChange={handleInputChange}
-        />
-        <Input
-          type="text"
-          name="total_pembayaran"
-          placeholder="Total Pembayaran"
-          value={editingTransaction ? editingTransaction.total_pembayaran : newTransaction.total_pembayaran}
-          onChange={handleInputChange}
-        />
-        <Input
-          type="text"
-          name="id_obat"
-          placeholder="ID Obat"
-          value={editingTransaction ? editingTransaction.id_obat : newTransaction.id_obat}
-          onChange={handleInputChange}
-        />
-        <Input
-          type="text"
-          name="jumlah_beli"
-          placeholder="Jumlah Beli"
-          value={editingTransaction ? editingTransaction.jumlah_beli : newTransaction.jumlah_beli}
-          onChange={handleInputChange}
-        />
-        <Input
-          type="text"
-          name="harga_satuan"
-          placeholder="Harga Satuan"
-          value={editingTransaction ? editingTransaction.harga_satuan : newTransaction.harga_satuan}
-          onChange={handleInputChange}
-        />
-        <ButtonContainer>
-          <EditButton onClick={handleSave}>Save</EditButton>
-        </ButtonContainer>
-      </FormContainer>
+      <h2>Sales Transactions</h2>
+      {selectedTransaction && (
+        <DetailContainer>
+          <DetailTitle>Transaction Details</DetailTitle>
+          <DetailItem><DetailLabel>ID :</DetailLabel> {selectedTransaction.ID}</DetailItem>
+          <DetailItem><DetailLabel>Transaction Date :</DetailLabel> {selectedTransaction.transaction_date}</DetailItem>
+          <DetailItem><DetailLabel>Total Payment :</DetailLabel> {selectedTransaction.total_payment}</DetailItem>
+          <DetailItem><DetailLabel>Medicine ID :</DetailLabel> {selectedTransaction.medicine_id}</DetailItem>
+          <DetailItem><DetailLabel>Quantity Purcashed :</DetailLabel> {selectedTransaction.quantuty_purchased}</DetailItem>
+          <DetailItem><DetailLabel>Unit Price :</DetailLabel> {selectedTransaction.unit_price}</DetailItem>
+          <ButtonContainer>
+            <CloseButton onClick={handleCloseDetail}>Close</CloseButton>
+          </ButtonContainer>
+        </DetailContainer>
+      )}
+
+      {!showForm && ( // Conditionally render the Add button
+        <AddButtonContainer>
+          <AddButton onClick={handleShowForm}>Add New Transaction</AddButton>
+        </AddButtonContainer>
+      )}
+      {showForm && (
+        <FormContainer>
+          <h3>{editingTransaction ? 'Edit Transaction' : 'Add New Transaction'}</h3>
+          <Label htmlFor="ID">ID</Label>
+          <Input
+            id="ID"
+            type="text"
+            name="ID"
+            placeholder="ID"
+            value={editingTransaction ? editingTransaction.ID : newTransaction.ID}
+            onChange={handleInputChange}
+            disabled={editingTransaction}
+          />
+          <Label htmlFor="transaction_date">Transaction Date</Label>
+          <Input
+            id="transaction_date"
+            type="text"
+            name="transaction_date"
+            placeholder="Transaction Date"
+            value={editingTransaction ? editingTransaction.transaction_date : newTransaction.transaction_date}
+            onChange={handleInputChange}
+          />
+          <Label htmlFor="total_payment">Total Payment</Label>
+          <Input
+            id="total_payment"
+            type="text"
+            name="total_payment"
+            placeholder="Total Payment"
+            value={editingTransaction ? editingTransaction.total_payment : newTransaction.total_payment}
+            onChange={handleInputChange}
+          />
+          <Label htmlFor="medicine_id">Medicine ID</Label>
+          <Input
+            id="medicine_id"
+            type="text"
+            name="medicine_id"
+            placeholder="Medicine ID"
+            value={editingTransaction ? editingTransaction.medicine_id : newTransaction.medicine_id}
+            onChange={handleInputChange}
+          />
+          <Label htmlFor="quantuty_purchased">Quantity Purchased</Label>
+          <Input
+            id="quantuty_purchased"
+            type="text"
+            name="quantuty_purchased"
+            placeholder="Quantity Purcashed"
+            value={editingTransaction ? editingTransaction.quantuty_purchased : newTransaction.quantuty_purchased}
+            onChange={handleInputChange}
+          />
+          <Label htmlFor="unit_price">Unit Price</Label>
+          <Input
+            id="unit_price"
+            type="text"
+            name="unit_price"
+            placeholder="Unit Price"
+            value={editingTransaction ? editingTransaction.unit_price : newTransaction.unit_price}
+            onChange={handleInputChange}
+          />
+          <ButtonContainer>
+            <EditButton onClick={handleSave}>Save</EditButton>
+            <CloseButton onClick={handleCloseForm}>Cancel</CloseButton>
+          </ButtonContainer>
+        </FormContainer>
+      )}
       <Table>
         <thead>
           <tr>
             <th>ID</th>
-            <th>Tanggal Transaksi</th>
-            <th>Total Pembayaran</th>
+            <th>Transaction Date</th>
+            <th>Total Payment</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -267,12 +363,12 @@ const TransaksiPenjualan = () => {
           {data.map((row, index) => (
             <tr key={index}>
               <td>{row.ID}</td>
-              <td>{row.tanggal_transaksi}</td>
-              <td>{row.total_pembayaran}</td>
+              <td>{row.transaction_date}</td>
+              <td>{row.total_payment}</td>
               <td>
                 <ButtonContainer>
                   <DetailButton onClick={() => handleDetail(row)}>Detail</DetailButton>
-                  <EditButton onClick={() => handleEdit(row)}>Edit</EditButton>
+                  <EditButton onClick={() => handleEdit(row)}>Update</EditButton>
                   <DeleteButton onClick={() => handleDelete(row)}>Delete</DeleteButton>
                 </ButtonContainer>
               </td>
@@ -280,23 +376,8 @@ const TransaksiPenjualan = () => {
           ))}
         </tbody>
       </Table>
-
-      {selectedTransaction && (
-        <DetailContainer>
-          <h3>Detail Transaksi</h3>
-          <DetailItem>ID: {selectedTransaction.ID}</DetailItem>
-          <DetailItem>Tanggal Transaksi: {selectedTransaction.tanggal_transaksi}</DetailItem>
-          <DetailItem>Total Pembayaran: {selectedTransaction.total_pembayaran}</DetailItem>
-          <DetailItem>ID Obat: {selectedTransaction.id_obat}</DetailItem>
-          <DetailItem>Jumlah Beli: {selectedTransaction.jumlah_beli}</DetailItem>
-          <DetailItem>Harga Satuan: {selectedTransaction.harga_satuan}</DetailItem>
-          <ButtonContainer>
-            <CloseButton onClick={handleCloseDetail}>Close</CloseButton>
-          </ButtonContainer>
-        </DetailContainer>
-      )}
     </TableContainer>
   );
 };
 
-export default TransaksiPenjualan;
+export default SalesTransactions;
