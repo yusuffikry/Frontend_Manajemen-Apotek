@@ -66,16 +66,17 @@ const DeleteButton = styled(Button)`
 `;
 
 const Table = styled.table`
-  width: 90%;
+  width: 80%;
   border-collapse: collapse;
-  margin: 2rem auto;
+  margin: 2rem auto; /* Center horizontally with auto margins */
+  text-align: center; /* Center align text in all table cells */
 `;
 
 const Th = styled.th`
   border: 1px solid #ddd;
   padding: 8px;
   background-color: #f2f2f2;
-  text-align: left;
+  text-align: center;
 `;
 
 const Td = styled.td`
@@ -91,7 +92,7 @@ const ButtonContainer = styled.div`
 
 const DataPemasok = () => {
   const [data, setData] = useState([
-    { id: 1, nama: 'Yuta', jenis: 'Tablet', merek: 'Rp20.000', tanggal: '14 Jan, 10.40 PM', jumlah: 450 }
+    { id: 1, nama: 'Perusahaan A', telepon: '08123456789' }
   ]);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -99,10 +100,7 @@ const DataPemasok = () => {
   const [editData, setEditData] = useState({
     id: '',
     nama: '',
-    jenis: '',
-    merek: '',
-    tanggal: '',
-    jumlah: ''
+    telepon: ''
   });
 
   const handleInputChange = (e) => {
@@ -116,19 +114,16 @@ const DataPemasok = () => {
       updatedData[editIndex] = editData;
       setData(updatedData);
       setEditIndex(null);
-      setEditData({ id: '', nama: '', jenis: '', merek: '', tanggal: '', jumlah: '' });
+      setEditData({ id: '', nama: '', telepon: '' });
       setIsEditing(false);
     } else {
       const newData = {
         id: data.length + 1,
         nama: editData.nama,
-        jenis: editData.jenis,
-        merek: editData.merek,
-        tanggal: editData.tanggal,
-        jumlah: editData.jumlah
+        telepon: editData.telepon
       };
       setData([...data, newData]);
-      setEditData({ id: '', nama: '', jenis: '', merek: '', tanggal: '', jumlah: '' });
+      setEditData({ id: '', nama: '', telepon: '' });
     }
   };
 
@@ -140,7 +135,7 @@ const DataPemasok = () => {
   };
 
   const handleDelete = (index) => {
-    if (window.confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+    if (window.confirm('Are you sure you want to delete this item?')) {
       const newData = [...data];
       newData.splice(index, 1);
       setData(newData);
@@ -150,53 +145,29 @@ const DataPemasok = () => {
   return (
     <Container>
       <FormContainer>
-        <h3>Mengelola Data Pemasok</h3>
+        <h3>Managing Supplier Data</h3>
         <Input
           type="text"
-          name="nama"
-          placeholder="Nama Pemasok"
+          name="name"
+          placeholder="Company name"
           value={editData.nama}
           onChange={handleInputChange}
         />
         <Input
           type="text"
-          name="jenis"
-          placeholder="Jenis Obat"
-          value={editData.jenis}
+          name="phone"
+          placeholder="Phone Number"
+          value={editData.telepon}
           onChange={handleInputChange}
         />
-        <Input
-          type="text"
-          name="merek"
-          placeholder="Merek Obat"
-          value={editData.merek}
-          onChange={handleInputChange}
-        />
-        <Input
-          type="text"
-          name="tanggal"
-          placeholder="Tanggal di Pasok"
-          value={editData.tanggal}
-          onChange={handleInputChange}
-        />
-        <Input
-          type="text"
-          name="jumlah"
-          placeholder="Jumlah Obat"
-          value={editData.jumlah}
-          onChange={handleInputChange}
-        />
-        <AddButton onClick={handleAdd}>{isEditing ? 'Simpan' : 'Tambah'}</AddButton>
+        <AddButton onClick={handleAdd}>{isEditing ? 'Save' : 'Add'}</AddButton>
       </FormContainer>
       <Table>
         <thead>
           <tr>
             <Th>ID</Th>
-            <Th>Nama</Th>
-            <Th>Jenis</Th>
-            <Th>Merek</Th>
-            <Th>Tanggal</Th>
-            <Th>Jumlah</Th>
+            <Th>Company Name</Th>
+            <Th>Phone Number</Th>
             <Th>Action</Th>
           </tr>
         </thead>
@@ -205,14 +176,11 @@ const DataPemasok = () => {
             <tr key={index}>
               <Td>{row.id}</Td>
               <Td>{row.nama}</Td>
-              <Td>{row.jenis}</Td>
-              <Td>{row.merek}</Td>
-              <Td>{row.tanggal}</Td>
-              <Td>{row.jumlah}</Td>
+              <Td>{row.telepon}</Td>
               <Td>
                 <ButtonContainer>
-                  <EditButton onClick={() => handleEdit(index)}>Edit</EditButton>
-                  <DeleteButton onClick={() => handleDelete(index)}>Hapus</DeleteButton>
+                  <EditButton onClick={() => handleEdit(index)}>Update</EditButton>
+                  <DeleteButton onClick={() => handleDelete(index)}>Delete</DeleteButton>
                 </ButtonContainer>
               </Td>
             </tr>

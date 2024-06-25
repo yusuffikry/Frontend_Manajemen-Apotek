@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
-import backgroundImage from './bg_apotek.jpeg'; // Sesuaikan dengan path gambar latar belakang yang benar
+import backgroundImage from './bg_apotek.jpeg';
+import axios from 'axios'; // Sesuaikan dengan path gambar latar belakang yang benar
 
 const LoginContainer = styled.div`
   display: flex;
@@ -78,21 +79,37 @@ const BackIcon = styled.svg`
   vertical-align: middle; /* Align icon vertically with text */
 `;
 
-const Login = ({ setIsAuthenticated }) => {
+const Login = (e) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async(e) => {
     e.preventDefault();
-    if (email === 'admin@example.com' && password === 'password') {
+    if (email.length > 1 && password.length > 1) {
+      await axios.post("http://127.0.0.1:8000/auth/login", {
+        "username" : email,
+        "password" : password
+      }
+      ,{ headers : {
+        "Content-Type" : "application/x-www-form-urlencoded",
+        
+      }}
+    )
+    .then((res)=>{
       localStorage.setItem('isAuthenticated', 'true');
-      setIsAuthenticated(true);
+      // setIsAuthenticated(true);
+      console.log(res);
+      localStorage.setItem("token" , res.data.access_token)
       navigate('/data-karyawan');
+    }).catch(
+      (error)=>{console.log(error)}
+    )
     } else {
       alert('Invalid credentials');
     }
   };
+
 
   return (
     <LoginContainer>
@@ -102,10 +119,10 @@ const Login = ({ setIsAuthenticated }) => {
             <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
           </BackIcon>
         </ArrowBack>
-        <Title>Login</Title>
+        <Title>Form Login</Title>
         <Input
-          type="email"
-          placeholder="Email"
+          type="text"
+          placeholder="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -117,7 +134,7 @@ const Login = ({ setIsAuthenticated }) => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <Button type="submit">Masuk</Button>
+        <Button type="submit">Login</Button>
         {/* <RegisterLink>Belum punya akun? <Link to="/register" style={{ color: 'white', textDecoration: 'underline' }}>Register</Link></RegisterLink> */}
       </LoginForm>
     </LoginContainer>

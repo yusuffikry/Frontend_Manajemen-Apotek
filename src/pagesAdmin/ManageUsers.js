@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import axios from "axios";
 
 const TableContainer = styled.div`
   width: 100%;
@@ -48,14 +49,32 @@ const Button = styled.button`
   border-radius: 5px;
   color: white;
   cursor: pointer;
+  margin-top: 0.5rem;
 `;
 
 const AddUserButton = styled(Button)`
-  background-color: #3498db;
+  background-color: #1abc9c;
   margin-bottom: 1rem;
 
   &:hover {
     background-color: #2980b9;
+  }
+`;
+
+const SaveButton = styled(Button)`
+  background-color: #2ecc71;
+  margin-right: 0.5rem;
+
+  &:hover {
+    background-color: #27ae60;
+  }
+`;
+
+const CancelButton = styled(Button)`
+  background-color: #95a5a6;
+
+  &:hover {
+    background-color: #7f8c8d;
   }
 `;
 
@@ -78,51 +97,78 @@ const DeleteButton = styled(Button)`
 `;
 
 const FormContainer = styled.div`
-  background-color: #f4f4f4;
+  background-color: #467aa4;
   padding: 1.5rem;
   border-radius: 10px;
-  margin: 1rem auto;
+  margin: 1.5rem auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   max-width: 600px;
-  width: 100%;
+`;
+
+const FormTitle = styled.h3``;
+
+const InputContainer = styled.div`
+  width: 90%;
+  margin-bottom: 0.5rem;
+  align-items: flex-start;
+`;
+
+const Label = styled.label`
+  color: white;
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 0.5rem;
-  margin: 0.5rem 0;
+  margin: 0.1rem 0;
   border: none;
   border-radius: 5px;
   font-size: 0.8rem;
 `;
 
 const ManageUsers = () => {
-  const [data, setData] = useState([
-    { username: 'user1', name: 'John Doe', email: 'user1@example.com', address: '123 Main St', role: 'Admin' },
-    { username: 'user2', name: 'Jane Smith', email: 'user2@example.com', address: '456 Elm St', role: 'User' },
-    { username: 'user3', name: 'Alice Johnson', email: 'user3@example.com', address: '789 Maple Ave', role: 'User' },
-    { username: 'user4', name: 'Bob Brown', email: 'user4@example.com', address: '101 Pine St', role: 'Moderator' },
-  ]);
+  const [data, setData] = useState([]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/user", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log(response);
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log(localStorage.getItem("token"));
+
+    fetchUsers();
+  }, []);
 
   const [isAdding, setIsAdding] = useState(false);
   const [newUser, setNewUser] = useState({
-    username: '',
-    name: '',
-    email: '',
-    address: '',
-    role: ''
+    nama_user: "",
+    email: "",
+    alamat: "",
+    role: "",
+    password: "",
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editIndex, setEditIndex] = useState(null);
+  // const [editIndex, setEditIndex] = useState(null);
   const [editUser, setEditUser] = useState({
-    username: '',
-    name: '',
-    email: '',
-    address: '',
-    role: ''
+    id_user : "",
+    nama_user: "",
+    email: "",
+    alamat: "",
+    role: "",
+    password: "",
   });
 
   const handleInputChange = (e) => {
@@ -135,94 +181,211 @@ const ManageUsers = () => {
   };
 
   const handleAddUser = () => {
+    if (newUser.role === null || newUser.role === "") {
+      return alert("Role tidak boleh null")
+    }
     if (isEditing) {
-      const updatedData = [...data];
-      updatedData[editIndex] = editUser;
-      setData(updatedData);
-      setEditIndex(null);
+      const updateUser = async () => {
+        await axios.put(
+          `http://localhost:8000/api/user/${editUser.id_user}`,
+          {
+            nama_user: editUser.nama_user,
+            role: editUser.role,
+            email: editUser.email,
+            alamat: editUser.alamat,
+            password: editUser.password,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+      };
+      updateUser();
+      fetchUsers();
+      // setEditIndex(null);
       setIsEditing(false);
-      setEditUser({ username: '', name: '', email: '', address: '', role: '' });
-    } else {
-      setData([...data, newUser]);
-      setNewUser({ username: '', name: '', email: '', address: '', role: '' });
       setIsAdding(false);
+      setEditUser({
+        nama_user: "",
+        email: "",
+        alamat: "",
+        role: "",
+        password: "",
+      });
+    } else {
+      console.log(newUser)
+      const addUser = async () => {
+        await axios.post(
+          "http://localhost:8000/api/user",
+          {
+            nama_user: newUser.nama_user,
+            role: newUser.role,
+            email: newUser.email,
+            alamat: newUser.alamat,
+            password: newUser.password,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+      };
+      addUser();
+      fetchUsers();
+      setNewUser({
+        nama_user: "",
+        email: "",
+        alamat: "",
+        role: "",
+        password: "",
+      });
+
+      setIsAdding(false); // Close the form after adding/editing
     }
   };
-
   const handleDeleteUser = (index) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this user?');
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    
     if (confirmDelete) {
-      const updatedData = [...data];
-      updatedData.splice(index, 1);
-      setData(updatedData);
+      const userToEdit = data[index];
+      console.log(userToEdit)
+      const deleteUser = async () => {
+        await axios.delete(
+          `http://localhost:8000/api/user/${userToEdit.id_user}`,
+
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+          
+        );
+      };
+      deleteUser()
+      setEditUser({
+        nama_user: "",
+        email: "",
+        alamat: "",
+        role: "",
+        password: "",
+      });
+      fetchUsers()
     }
   };
 
   const handleEditUser = (index) => {
     setIsEditing(true);
-    setEditIndex(index);
+    // setEditIndex(index);
     const userToEdit = data[index];
     setEditUser({ ...userToEdit });
+    console.log(userToEdit);
     setIsAdding(true); // Show the form
+  };
+
+  const handleCancel = () => {
+    setIsAdding(false);
+    setIsEditing(false);
+    setNewUser({ nama_user: "", email: "", alamat: "", role: "", password: "" });
+    setEditUser({ nama_user: "", email: "", alamat: "", role: "", password: "" });
   };
 
   return (
     <TableContainer>
       <h3>Manage Users</h3>
-      <RightButtonContainer>
-        <AddUserButton onClick={() => {
-          setIsAdding(!isAdding);
-          setIsEditing(false);
-          setEditIndex(null);
-          setEditUser({ username: '', name: '', email: '', address: '', role: '' });
-        }}>
-          {isAdding || isEditing ? 'Cancel' : 'Add User'}
-        </AddUserButton>
-      </RightButtonContainer>
+      {!isAdding &&
+        !isEditing && ( // Conditionally render the Add button
+          <RightButtonContainer>
+            <AddUserButton
+              onClick={() => {
+                setIsAdding(true);
+                setIsEditing(false);
+                // setEditIndex(null);
+                setEditUser({
+                  nama_user: "",
+                  email: "",
+                  alamat: "",
+                  role: "",
+                  password: "",
+                });
+              }}
+            >
+              Add User
+            </AddUserButton>
+          </RightButtonContainer>
+        )}
       {(isAdding || isEditing) && (
         <FormContainer>
-          <Input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={isEditing ? editUser.username : newUser.username}
-            onChange={handleInputChange}
-          />
-          <Input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={isEditing ? editUser.name : newUser.name}
-            onChange={handleInputChange}
-          />
-          <Input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={isEditing ? editUser.email : newUser.email}
-            onChange={handleInputChange}
-          />
-          <Input
-            type="text"
-            name="address"
-            placeholder="Address"
-            value={isEditing ? editUser.address : newUser.address}
-            onChange={handleInputChange}
-          />
-          <Input
-            type="text"
-            name="role"
-            placeholder="Role"
-            value={isEditing ? editUser.role : newUser.role}
-            onChange={handleInputChange}
-          />
-          <AddUserButton onClick={handleAddUser}>{isEditing ? 'Save Changes' : 'Add User'}</AddUserButton>
+          <FormTitle>{isEditing ? "Edit User" : "Add User"}</FormTitle>
+          <InputContainer>
+            <Label>Name</Label>
+            <Input
+              type="text"
+              name="nama_user"
+              placeholder="Name"
+              value={isEditing ? editUser.nama_user : newUser.name}
+              onChange={handleInputChange}
+            />
+          </InputContainer>
+          <InputContainer>
+            <Label>Email</Label>
+            <Input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={isEditing ? editUser.email : newUser.email}
+              onChange={handleInputChange}
+            />
+          </InputContainer>
+          <InputContainer>
+            <Label>Address</Label>
+            <Input
+              type="text"
+              name="alamat"
+              placeholder="Address"
+              value={isEditing ? editUser.alamat : newUser.alamat}
+              onChange={handleInputChange}
+            />
+          </InputContainer>
+          <InputContainer>
+            <Label>Role</Label>
+            <select
+              name="role"
+              value={isEditing ? editUser.role : newUser.role}
+              onChange={handleInputChange}
+            > 
+            { (isAdding) && (
+              <option value="">Pilih Role</option>
+            )}
+              <option value="2">Admin</option>
+              <option value="1">User</option>
+            </select>
+          </InputContainer>
+          <InputContainer>
+            <Label>Password</Label>
+            <Input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={isEditing ? editUser.password : newUser.password}
+              onChange={handleInputChange}
+            />
+          </InputContainer>
+          <ButtonContainer>
+            <SaveButton onClick={handleAddUser}>
+              {isEditing ? "Save Changes" : "Add User"}
+            </SaveButton>
+            <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+          </ButtonContainer>
         </FormContainer>
       )}
       <Table>
         <thead>
           <Tr>
-            <Th>Username</Th>
             <Th>Name</Th>
             <Th>Email</Th>
             <Th>Address</Th>
@@ -233,15 +396,18 @@ const ManageUsers = () => {
         <tbody>
           {data.map((row, index) => (
             <Tr key={index}>
-              <Td>{row.username}</Td>
-              <Td>{row.name}</Td>
+              <Td>{row.nama_user}</Td>
               <Td>{row.email}</Td>
-              <Td>{row.address}</Td>
-              <Td>{row.role}</Td>
+              <Td>{row.alamat}</Td>
+              <Td>{row.role === 1 ? "karyawan" : "admin"}</Td>
               <Td>
                 <ButtonContainer>
-                  <EditButton onClick={() => handleEditUser(index)}>Edit</EditButton>
-                  <DeleteButton onClick={() => handleDeleteUser(index)}>Delete</DeleteButton>
+                  <EditButton onClick={() => handleEditUser(index)}>
+                    Update
+                  </EditButton>
+                  <DeleteButton onClick={() => handleDeleteUser(index)}>
+                    Delete
+                  </DeleteButton>
                 </ButtonContainer>
               </Td>
             </Tr>

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -95,8 +96,31 @@ const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('John Doe');
   const [email, setEmail] = useState('johndoe@example.com');
-  const [password, setPassword] = useState('password123');
+  const [role, setRole] = useState('');
   const [address, setAddress] = useState('123 Main St');
+
+  useEffect(() => {
+    console.log(localStorage.getItem('token'))
+
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/auth/me', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+          }
+        });
+        console.log(response);
+        setUsername(response.data.nama_user);
+        setEmail(response.data.email);
+        setAddress(response.data.alamat);
+        setRole(response.data.role === 1 ? "karyawan": "admin")
+        
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -106,7 +130,7 @@ const UserProfile = () => {
     e.preventDefault();
     setIsEditing(false);
     // Add logic to save updated profile information
-    console.log('Profile updated:', { username, email, password, address });
+    console.log('Profile updated:', { username, email, role, address });
     alert('Profile updated successfully!');
   };
 
@@ -131,14 +155,7 @@ const UserProfile = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        
           <Label htmlFor="address">Address</Label>
           <Input
             id="address"
@@ -157,11 +174,11 @@ const UserProfile = () => {
     <ProfileContainer>
       <ProfileDetails>
         <Title>User Profile</Title>
-        <Detail><DetailLabel>Name:</DetailLabel> {username}</Detail>
-        <Detail><DetailLabel>Email:</DetailLabel> {email}</Detail>
-        <Detail><DetailLabel>Password:</DetailLabel> {password}</Detail>
-        <Detail><DetailLabel>Address:</DetailLabel> {address}</Detail>
-        <Button onClick={handleEditClick}>Edit Profile</Button>
+        <Detail><DetailLabel>Name :</DetailLabel> {username}</Detail>
+        <Detail><DetailLabel>Email :</DetailLabel> {email}</Detail>
+        <Detail><DetailLabel>Role :</DetailLabel> {role}</Detail>
+        <Detail><DetailLabel>Address :</DetailLabel> {address}</Detail>
+        <Button onClick={handleEditClick}>Update Profile</Button>
       </ProfileDetails>
     </ProfileContainer>
   );
