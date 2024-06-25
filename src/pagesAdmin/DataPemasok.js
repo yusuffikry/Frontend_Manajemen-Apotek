@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -68,8 +69,8 @@ const DeleteButton = styled(Button)`
 const Table = styled.table`
   width: 80%;
   border-collapse: collapse;
-  margin: 2rem auto; /* Center horizontally with auto margins */
-  text-align: center; /* Center align text in all table cells */
+  margin: 2rem auto;
+  text-align: center;
 `;
 
 const Th = styled.th`
@@ -91,39 +92,79 @@ const ButtonContainer = styled.div`
 `;
 
 const DataPemasok = () => {
-  const [data, setData] = useState([
-    { id: 1, nama: 'Perusahaan A', telepon: '08123456789' }
-  ]);
-
+  const [data, setData] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [editData, setEditData] = useState({
     id: '',
-    nama: '',
-    telepon: ''
+    nama_perusahaan: '',
+    nomor_telepon: ''
   });
+
+  const fetchPemasok = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/pemasok", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching pemasok:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPemasok();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
   };
 
-  const handleAdd = () => {
-    if (isEditing) {
-      const updatedData = [...data];
-      updatedData[editIndex] = editData;
-      setData(updatedData);
-      setEditIndex(null);
-      setEditData({ id: '', nama: '', telepon: '' });
-      setIsEditing(false);
-    } else {
-      const newData = {
-        id: data.length + 1,
-        nama: editData.nama,
-        telepon: editData.telepon
-      };
-      setData([...data, newData]);
-      setEditData({ id: '', nama: '', telepon: '' });
+  const handleAdd = async () => {
+    try {
+      if (isEditing) {
+        const updatedData = [...data];
+        updatedData[editIndex] = editData;
+
+        await axios.put(
+          `http://localhost:8000/api/pemasok/${editData.id}`,
+          {
+            nama_perusahaan: editData.nama_perusahaan,
+            nomor_telepon: editData.nomor_telepon,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        setData(updatedData);
+        setEditIndex(null);
+        setEditData({ id: '', nama_perusahaan: '', nomor_telepon: '' });
+        setIsEditing(false);
+      } else {
+        const response = await axios.post(
+          "http://localhost:8000/api/pemasok/",
+          {
+            nama_perusahaan: editData.nama_perusahaan,
+            nomor_telepon: editData.nomor_telepon,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        setData([...data, response.data]);
+        setEditData({ id: '', nama_perusahaan: '', nomor_telepon: '' });
+      }
+    } catch (error) {
+      console.error("Error adding/updating pemasok:", error);
     }
   };
 
@@ -134,11 +175,21 @@ const DataPemasok = () => {
     setEditData({ ...dataToEdit });
   };
 
-  const handleDelete = (index) => {
+  const handleDelete = async (index) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
-      const newData = [...data];
-      newData.splice(index, 1);
-      setData(newData);
+      try {
+        await axios.delete(`http://localhost:8000/api/pemasok/${data[index].id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const newData = [...data];
+        newData.splice(index, 1);
+        setData(newData);
+      } catch (error) {
+        console.error("Error deleting pemasok:", error);
+      }
     }
   };
 
@@ -148,16 +199,16 @@ const DataPemasok = () => {
         <h3>Managing Supplier Data</h3>
         <Input
           type="text"
-          name="name"
+          name="nama_perusahaan"
           placeholder="Company name"
-          value={editData.nama}
+          value={editData.nama_perusahaan}
           onChange={handleInputChange}
         />
         <Input
           type="text"
-          name="phone"
+          name="nomor_telepon"
           placeholder="Phone Number"
-          value={editData.telepon}
+          value={editData.nomor_telepon}
           onChange={handleInputChange}
         />
         <AddButton onClick={handleAdd}>{isEditing ? 'Save' : 'Add'}</AddButton>
@@ -175,8 +226,8 @@ const DataPemasok = () => {
           {data.map((row, index) => (
             <tr key={index}>
               <Td>{row.id}</Td>
-              <Td>{row.nama}</Td>
-              <Td>{row.telepon}</Td>
+              <Td>{row.nama_perusahaan}</Td>
+              <Td>{row.nomor_telepon}</Td>
               <Td>
                 <ButtonContainer>
                   <EditButton onClick={() => handleEdit(index)}>Update</EditButton>

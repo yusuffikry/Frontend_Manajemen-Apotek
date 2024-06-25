@@ -181,7 +181,7 @@ const ManageUsers = () => {
   };
 
   const handleAddUser = () => {
-    if (newUser.role === null || newUser.role === "") {
+    if (newUser.role === null && editUser !== null ) {
       return alert("Role tidak boleh null")
     }
     if (isEditing) {
@@ -258,6 +258,7 @@ const ManageUsers = () => {
         await axios.delete(
           `http://localhost:8000/api/user/${userToEdit.id_user}`,
 
+          
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
