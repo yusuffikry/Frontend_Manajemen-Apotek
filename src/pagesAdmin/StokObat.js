@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const Container = styled.div`
   padding: 1rem;
@@ -91,17 +92,31 @@ const ButtonContainer = styled.div`
 `;
 
 const MedicineInventory = () => {
-  const [data, setData] = useState([
-    { id: 1, name: 'Yuta', type: 'Tablet', price: 'Rp20,000', expiryDate: '14 Jan, 10:40 PM', quantity: 450 }
-  ]);
+  const [data, setData] = useState([]);
+
+  const fetchObat = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/obat", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching obat:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchObat();
+  }, []);
 
   const [form, setForm] = useState({
     id: '',
-    name: '',
-    type: '',
-    price: '',
-    expiryDate: '',
-    quantity: ''
+    nama_obat: '',
+    jenis_obat: '',
+    harga: '',
+    jumlah_stok: ''
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -114,9 +129,27 @@ const MedicineInventory = () => {
     });
   };
 
-  const handleAdd = () => {
-    setData([...data, { ...form, id: data.length + 1 }]);
-    setForm({ id: '', name: '', type: '', price: '', expiryDate: '', quantity: '' });
+  const handleAdd = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/obat/",
+        {
+          nama_obat: form.nama_obat,
+          jenis_obat: form.jenis_obat,
+          harga: form.harga,
+          jumlah_stok: form.jumlah_stok,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setData([...data, response.data]);
+      setForm({ id: '', nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
+    } catch (error) {
+      console.error("Error adding obat:", error);
+    }
   };
 
   const handleEdit = (item) => {
@@ -124,15 +157,55 @@ const MedicineInventory = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    setData(data.map(item => (item.id === form.id ? form : item)));
-    setForm({ id: '', name: '', type: '', price: '', expiryDate: '', quantity: '' });
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!form.id) {
+      console.error("No ID provided for the update");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/obat/${form.id}`,
+        {
+          nama_obat: form.nama_obat,
+          jenis_obat: form.jenis_obat,
+          harga: form.harga,
+          jumlah_stok: form.jumlah_stok,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setData(data.map(item => (item.id === form.id ? response.data : item)));
+      setForm({ id: '', nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating obat:", error);
+    }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
+    if (!id) {
+      console.error("No ID provided for the delete");
+      return;
+    }
+
     if (window.confirm(`Are you sure you want to delete the medicine with ID ${id}?`)) {
-      setData(data.filter(item => item.id !== id));
+      try {
+        await axios.delete(
+          `http://localhost:8000/api/obat/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setData(data.filter(item => item.id !== id));
+      } catch (error) {
+        console.error("Error deleting obat:", error);
+      }
     }
   };
 
@@ -140,11 +213,10 @@ const MedicineInventory = () => {
     <Container>
       <FormContainer>
         <h3>Managing Medicine Inventory</h3>
-        <Input type="text" name="name" placeholder="Medicine Name" value={form.name} onChange={handleInputChange} />
-        <Input type="text" name="type" placeholder="Medicine Type" value={form.type} onChange={handleInputChange} />
-        <Input type="text" name="price" placeholder="Price" value={form.price} onChange={handleInputChange} />
-        <Input type="text" name="expiryDate" placeholder="Expiry Date" value={form.expiryDate} onChange={handleInputChange} />
-        <Input type="text" name="quantity" placeholder="Quantity" value={form.quantity} onChange={handleInputChange} />
+        <Input type="text" name="nama_obat" placeholder="Medicine Name" value={form.nama_obat} onChange={handleInputChange} />
+        <Input type="text" name="jenis_obat" placeholder="Medicine Type" value={form.jenis_obat} onChange={handleInputChange} />
+        <Input type="text" name="harga" placeholder="Price" value={form.harga} onChange={handleInputChange} />
+        <Input type="text" name="jumlah_stok" placeholder="Quantity" value={form.jumlah_stok} onChange={handleInputChange} />
         {isEditing ? (
           <AddButton onClick={handleSave}>Save Changes</AddButton>
         ) : (
@@ -158,7 +230,6 @@ const MedicineInventory = () => {
             <Th>Name</Th>
             <Th>Type</Th>
             <Th>Price</Th>
-            <Th>Expiry Date</Th>
             <Th>Quantity</Th>
             <Th>Action</Th>
           </tr>
@@ -167,11 +238,10 @@ const MedicineInventory = () => {
           {data.map((row, index) => (
             <tr key={index}>
               <Td>{row.id}</Td>
-              <Td>{row.name}</Td>
-              <Td>{row.type}</Td>
-              <Td>{row.price}</Td>
-              <Td>{row.expiryDate}</Td>
-              <Td>{row.quantity}</Td>
+              <Td>{row.nama_obat}</Td>
+              <Td>{row.jenis_obat}</Td>
+              <Td>{row.harga}</Td>
+              <Td>{row.jumlah_stok}</Td>
               <Td>
                 <ButtonContainer>
                   <EditButton onClick={() => handleEdit(row)}>Update</EditButton>

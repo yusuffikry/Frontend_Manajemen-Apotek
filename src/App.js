@@ -1,4 +1,3 @@
-// File: App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -12,7 +11,7 @@ import DataPemasok from './pagesAdmin/DataPemasok';
 import TransaksiPenjualan from './pagesAdmin/TransaksiPenjualan';
 import DashboardUser from './pagesUsers/DashboardUsers';
 import EditProfile from './pagesUsers/EditProfile';
-import MainDashboard from './mainPages/MainDashboard'; // Import MainDashboard component
+import MainDashboard from './mainPages/MainDashboard';
 
 const AppContainer = styled.div`
   display: flex;

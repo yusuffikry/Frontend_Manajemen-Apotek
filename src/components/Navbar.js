@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 const NavbarContainer = styled.div`
   background-color: #3498db;
@@ -53,12 +53,18 @@ const LogoutButton = styled.button`
 `;
 
 const Navbar = () => {
+  const navigate = useNavigate(); // Untuk navigasi halaman
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
   const isUser = location.pathname.startsWith('/user');
 
   const handleLogout = () => {
-    console.log('Logout button clicked');
+    if (window.confirm('Are you sure you want to logout?')) {
+      // Perform logout actions, e.g., clearing localStorage, etc.
+      console.log('Logging out...');
+      localStorage.clear(); // Clear localStorage for logout
+      navigate('/'); // Navigate back to the home page after logout
+    }
   };
 
   return (

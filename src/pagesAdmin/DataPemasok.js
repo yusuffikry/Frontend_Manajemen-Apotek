@@ -203,7 +203,7 @@ const DataPemasok = () => {
         }
   
         const idToDelete = data[index].id;
-        await axios.delete(`http://localhost:8000/api/pemasok/${idToDelete}`, {
+        await axios.delete(`http://localhost:8000/api/pemasok/${idToDelete.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

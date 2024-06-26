@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
 import backgroundImage from './bg_apotek.jpeg';
-import axios from 'axios'; // Sesuaikan dengan path gambar latar belakang yang benar
+import axios from 'axios';
 
 const LoginContainer = styled.div`
   display: flex;
@@ -10,31 +10,31 @@ const LoginContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-image: url(${backgroundImage}); /* Set background image */
-  background-size: cover; /* Cover the entire container */
-  background-position: center; /* Center the background image */
+  background-image: url(${backgroundImage});
+  background-size: cover;
+  background-position: center;
 `;
 
 const LoginForm = styled.form`
-  position: relative; /* Ensure relative positioning for child elements */
-  background-color: rgba(70, 122, 164, 0.8); /* Blue semi-transparent background */
+  position: relative;
+  background-color: rgba(70, 122, 164, 0.8);
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   color: white;
-  width: 500px; /* Adjust the width as needed */
-  max-width: 90%; /* Ensure it doesn't exceed 90% of the viewport width */
+  width: 500px;
+  max-width: 90%;
 `;
 
 const Title = styled.h1`
   margin-bottom: 1rem;
-  display: inline-block; /* Ensure block-level element behavior */
+  display: inline-block;
 `;
 
 const Input = styled.input`
   display: block;
-  width: calc(100% - 20px); /* Account for padding */
+  width: calc(100% - 20px);
   padding: 10px;
   margin: 10px auto;
   border: none;
@@ -43,7 +43,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  width: 100%; /* Account for padding */
+  width: 100%;
   padding: 10px;
   margin: 10px auto;
   border: none;
@@ -61,7 +61,7 @@ const Button = styled.button`
 const ArrowBack = styled(Link)`
   position: absolute;
   top: 55px;
-  left: 35px; /* Adjust left position to place arrow icon */
+  left: 35px;
   color: white;
   font-size: 1.5rem;
   text-decoration: none;
@@ -70,40 +70,59 @@ const ArrowBack = styled(Link)`
 `;
 
 const BackIcon = styled.svg`
-  margin-right: 5px; /* Add space between icon and text */
-  vertical-align: middle; /* Align icon vertically with text */
+  margin-right: 5px;
+  vertical-align: middle;
 `;
 
-const Login = (e) => {
+const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = async(e) => {
+  useEffect(() => {
+    console.log(localStorage.getItem("token"));
+  }, []);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (email.length > 1 && password.length > 1) {
-      await axios.post("http://127.0.0.1:8000/auth/login", {
-        "username" : email,
-        "password" : password
+      try {
+        const res = await axios.post("http://127.0.0.1:8000/auth/login", {
+          "username": email,
+          "password": password
+        }, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          }
+        });
+
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem("token", res.data.access_token);
+
+        const userRes = await axios.get("http://localhost:8000/auth/me", {
+          headers: {
+            Authorization: `Bearer ${res.data.access_token}`,
+          },
+        });
+
+        const userRole = userRes.data.role; // Assuming the role is in the response data
+
+        if (userRole === 2) {
+          navigate('/admin');
+        } else if (userRole === 1) {
+          navigate('/user');
+        } else {
+          console.error("Invalid user role");
+        }
+      } catch (error) {
+        console.log(error);
+        setError('Invalid username or password. Please try again.');
       }
-      ,{ headers : {
-        "Content-Type" : "application/x-www-form-urlencoded",
-        
-      }}
-    )
-    .then((res)=>{
-      localStorage.setItem('isAuthenticated', 'true');
-      console.log(res);
-      localStorage.setItem("token" , res.data.access_token)
-      navigate('/admin');
-    }).catch(
-      (error)=>{console.log(error)}
-    )
     } else {
-      alert('Invalid credentials');
+      setError('Please enter both username and password.');
     }
   };
-
 
   return (
     <LoginContainer>
@@ -128,6 +147,7 @@ const Login = (e) => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <Button type="submit">Login</Button>
       </LoginForm>
     </LoginContainer>
