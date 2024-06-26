@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import backgroundImage from './bg_apotek.jpeg'; // Sesuaikan dengan path gambar latar belakang yang benar
+import backgroundImage from './bg_apotek.jpeg'; 
 
 const DashboardContainer = styled.div`
   display: flex;
@@ -52,10 +52,6 @@ const LoginButton = styled(ActionButton)`
   background-color: #26355D; /* Warna default untuk tombol Login */
 `;
 
-// const RegisterButton = styled(ActionButton)`
-//   background-color: #2980b9; /* Warna default untuk tombol Register */
-// `;
-
 const MainDashboard = () => {
   return (
     <DashboardContainer>
@@ -65,9 +61,6 @@ const MainDashboard = () => {
         <Link to="/login">
           <LoginButton>Login</LoginButton>
         </Link>
-        {/* <Link to="/register">
-          <RegisterButton>Register</RegisterButton>
-        </Link> */}
       </ContentWrapper>
     </DashboardContainer>
   );

@@ -58,11 +58,6 @@ const Button = styled.button`
   }
 `;
 
-// const RegisterLink = styled.p`
-//   margin-top: 1rem;
-//   font-size: 1rem;
-// `;
-
 const ArrowBack = styled(Link)`
   position: absolute;
   top: 55px;
@@ -98,10 +93,9 @@ const Login = (e) => {
     )
     .then((res)=>{
       localStorage.setItem('isAuthenticated', 'true');
-      // setIsAuthenticated(true);
       console.log(res);
       localStorage.setItem("token" , res.data.access_token)
-      navigate('/data-karyawan');
+      navigate('/admin');
     }).catch(
       (error)=>{console.log(error)}
     )
@@ -135,7 +129,6 @@ const Login = (e) => {
           required
         />
         <Button type="submit">Login</Button>
-        {/* <RegisterLink>Belum punya akun? <Link to="/register" style={{ color: 'white', textDecoration: 'underline' }}>Register</Link></RegisterLink> */}
       </LoginForm>
     </LoginContainer>
   );

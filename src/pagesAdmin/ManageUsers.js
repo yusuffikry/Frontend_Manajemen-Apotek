@@ -128,6 +128,15 @@ const Input = styled.input`
   font-size: 0.8rem;
 `;
 
+const Select = styled.select`
+  width: 103%;
+  padding: 0.5rem;
+  margin: 0.1rem 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+`;
+
 const ManageUsers = () => {
   const [data, setData] = useState([]);
 
@@ -161,7 +170,6 @@ const ManageUsers = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  // const [editIndex, setEditIndex] = useState(null);
   const [editUser, setEditUser] = useState({
     id_user : "",
     nama_user: "",
@@ -204,7 +212,6 @@ const ManageUsers = () => {
       };
       updateUser();
       fetchUsers();
-      // setEditIndex(null);
       setIsEditing(false);
       setIsAdding(false);
       setEditUser({
@@ -243,7 +250,7 @@ const ManageUsers = () => {
         password: "",
       });
 
-      setIsAdding(false); // Close the form after adding/editing
+      setIsAdding(false);
     }
   };
   const handleDeleteUser = (index) => {
@@ -281,7 +288,6 @@ const ManageUsers = () => {
 
   const handleEditUser = (index) => {
     setIsEditing(true);
-    // setEditIndex(index);
     const userToEdit = data[index];
     setEditUser({ ...userToEdit });
     console.log(userToEdit);
@@ -305,7 +311,6 @@ const ManageUsers = () => {
               onClick={() => {
                 setIsAdding(true);
                 setIsEditing(false);
-                // setEditIndex(null);
                 setEditUser({
                   nama_user: "",
                   email: "",
@@ -354,17 +359,15 @@ const ManageUsers = () => {
           </InputContainer>
           <InputContainer>
             <Label>Role</Label>
-            <select
+            <Select
               name="role"
               value={isEditing ? editUser.role : newUser.role}
               onChange={handleInputChange}
-            > 
-            { (isAdding) && (
-              <option value="">Pilih Role</option>
-            )}
+            >
+              {isAdding && <option value="">Select Role</option>}
               <option value="2">Admin</option>
-              <option value="1">User</option>
-            </select>
+              <option value="1">Employee</option>
+            </Select>
           </InputContainer>
           <InputContainer>
             <Label>Password</Label>
