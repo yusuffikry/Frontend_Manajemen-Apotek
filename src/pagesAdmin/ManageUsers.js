@@ -403,7 +403,7 @@ const ManageUsers = () => {
               <Td>{row.nama_user}</Td>
               <Td>{row.email}</Td>
               <Td>{row.alamat}</Td>
-              <Td>{row.role === 1 ? "karyawan" : "admin"}</Td>
+              <Td>{row.role === 1 ? "employee" : "admin"}</Td>
               <Td>
                 <ButtonContainer>
                   <EditButton onClick={() => handleEditUser(index)}>

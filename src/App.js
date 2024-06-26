@@ -26,7 +26,7 @@ const MainContent = styled.main`
 
 const App = () => {
   const location = useLocation();
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/';
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/';
 
   return (
     <AppContainer>

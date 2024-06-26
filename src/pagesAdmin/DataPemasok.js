@@ -101,6 +101,10 @@ const DataPemasok = () => {
     nomor_telepon: ''
   });
 
+  useEffect(() => {
+    fetchPemasok();
+  }, []);
+
   const fetchPemasok = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/pemasok", {
@@ -114,21 +118,23 @@ const DataPemasok = () => {
     }
   };
 
-  useEffect(() => {
-    fetchPemasok();
-  }, []);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
   };
 
   const handleAdd = async () => {
-    try {
-      if (isEditing) {
-        const updatedData = [...data];
-        updatedData[editIndex] = editData;
-
+    if (!editData.nama_perusahaan || !editData.nomor_telepon) {
+      alert('All fields are required!');
+      return;
+    }
+  
+    if (isEditing) {
+      if (!editData.id) {
+        alert('ID is required for editing!');
+        return;
+      }
+      try {
         await axios.put(
           `http://localhost:8000/api/pemasok/${editData.id}`,
           {
@@ -141,12 +147,19 @@ const DataPemasok = () => {
             },
           }
         );
-
+  
+        const updatedData = [...data];
+        updatedData[editIndex] = editData;
         setData(updatedData);
         setEditIndex(null);
         setEditData({ id: '', nama_perusahaan: '', nomor_telepon: '' });
         setIsEditing(false);
-      } else {
+        alert('Supplier data updated successfully!');
+      } catch (error) {
+        console.error("Error updating pemasok:", error);
+      }
+    } else {
+      try {
         const response = await axios.post(
           "http://localhost:8000/api/pemasok/",
           {
@@ -159,34 +172,46 @@ const DataPemasok = () => {
             },
           }
         );
-
+  
         setData([...data, response.data]);
         setEditData({ id: '', nama_perusahaan: '', nomor_telepon: '' });
+        alert('Supplier data added successfully!');
+      } catch (error) {
+        console.error("Error adding pemasok:", error);
       }
-    } catch (error) {
-      console.error("Error adding/updating pemasok:", error);
     }
   };
-
+  
   const handleEdit = (index) => {
     setIsEditing(true);
     setEditIndex(index);
     const dataToEdit = data[index];
-    setEditData({ ...dataToEdit });
+    setEditData({
+      id: dataToEdit.id_pemasok, // Pastikan id_pemasok digunakan di sini
+      nama_perusahaan: dataToEdit.nama_perusahaan,
+      nomor_telepon: dataToEdit.nomor_telepon
+    });
   };
-
+  
   const handleDelete = async (index) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
-        await axios.delete(`http://localhost:8000/api/pemasok/${data[index].id}`, {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert('Token is missing. Please log in again.');
+          return;
+        }
+  
+        const idToDelete = data[index].id;
+        await axios.delete(`http://localhost:8000/api/pemasok/${idToDelete}`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
-
-        const newData = [...data];
-        newData.splice(index, 1);
-        setData(newData);
+  
+        // Update data state by filtering out the deleted item
+        setData(prevData => prevData.filter((item, idx) => idx !== index));
+        alert('Supplier data deleted successfully!');
       } catch (error) {
         console.error("Error deleting pemasok:", error);
       }
@@ -216,7 +241,6 @@ const DataPemasok = () => {
       <Table>
         <thead>
           <tr>
-            <Th>ID</Th>
             <Th>Company Name</Th>
             <Th>Phone Number</Th>
             <Th>Action</Th>
@@ -225,7 +249,6 @@ const DataPemasok = () => {
         <tbody>
           {data.map((row, index) => (
             <tr key={index}>
-              <Td>{row.id}</Td>
               <Td>{row.nama_perusahaan}</Td>
               <Td>{row.nomor_telepon}</Td>
               <Td>
