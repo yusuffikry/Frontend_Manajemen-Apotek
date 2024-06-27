@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
 import backgroundImage from './bg_apotek.jpeg';
 import axios from 'axios';
+import qs from 'qs';
 
 const LoginContainer = styled.div`
   display: flex;
@@ -80,18 +81,16 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    console.log(localStorage.getItem("token"));
-  }, []);
-
   const handleLogin = async (e) => {
     e.preventDefault();
     if (email.length > 1 && password.length > 1) {
       try {
-        const res = await axios.post("http://127.0.0.1:8000/auth/login", {
-          "username": email,
-          "password": password
-        }, {
+        const formData = qs.stringify({
+          username: email,
+          password: password
+        });
+
+        const res = await axios.post("http://127.0.0.1:8000/auth/login", formData, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           }
@@ -107,16 +106,18 @@ const Login = () => {
         });
 
         const userRole = userRes.data.role; // Assuming the role is in the response data
+        console.log("User role:", userRole); // Debugging line
 
-        if (userRole === 2) {
-          navigate('/admin');
+        if (userRole === 0 || userRole === 2) {
+          navigate('/admin');        
         } else if (userRole === 1) {
           navigate('/user');
         } else {
-          console.error("Invalid user role");
+          console.error("Invalid user role:", userRole);
+          setError(`Invalid user role: ${userRole}`);
         }
       } catch (error) {
-        console.log(error);
+        console.error("Login error:", error);
         setError('Invalid username or password. Please try again.');
       }
     } else {

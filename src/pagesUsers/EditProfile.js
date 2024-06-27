@@ -7,8 +7,7 @@ const ProfileContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 70vh;
-  padding: 20px;
+  height: 80vh;
 `;
 
 const ProfileDetails = styled.div`
@@ -92,94 +91,146 @@ const Input = styled.input`
   font-size: 1rem;
 `;
 
+const CheckboxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 0rem;
+`;
+
+const CheckboxLabel = styled.label`
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+`;
+
 const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [username, setUsername] = useState('John Doe');
-  const [email, setEmail] = useState('johndoe@example.com');
-  const [role, setRole] = useState('');
-  const [address, setAddress] = useState('123 Main St');
+  const [editUser, setEditUser] = useState({
+    id_user: 0,
+    nama_user: '',
+    email: '',
+    role: '',
+    alamat: '',
+    password: ''
+  });
+  const [editPassword, setEditPassword] = useState(false); // State to track if user wants to edit password
 
   useEffect(() => {
-    console.log(localStorage.getItem('token'))
-
-    const fetchUsers = async () => {
+    const fetchUserData = async () => {
       try {
         const response = await axios.get('http://localhost:8000/auth/me', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, 
           }
         });
-        console.log(response);
-        setUsername(response.data.nama_user);
-        setEmail(response.data.email);
-        setAddress(response.data.alamat);
-        setRole(response.data.role === 1 ? "karyawan": "admin")
-        
+        setEditUser({
+          id_user: response.data.id_user,
+          nama_user: response.data.nama_user,
+          email: response.data.email,
+          role: response.data.role === 1 ? 'employee' : 'admin',
+          alamat: response.data.alamat,
+          password: '' // Tidak disarankan untuk mengirimkan password dalam respons
+        });
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error('Error fetching user data:', error);
       }
     };
-    fetchUsers();
+    fetchUserData();
   }, []);
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
-  const handleSaveClick = (e) => {
+  const handleSaveClick = async (e) => {
     e.preventDefault();
-    setIsEditing(false);
-    // Add logic to save updated profile information
-    console.log('Profile updated:', { username, email, role, address });
-    alert('Profile updated successfully!');
+    try {
+      const userData = {
+        nama_user: editUser.nama_user,
+        email: editUser.email,
+        alamat: editUser.alamat,
+      };
+      if (editPassword) {
+        userData.password = editUser.password; // Include password only if editPassword is true
+      }
+      const response = await axios.put(`http://localhost:8000/api/user/${editUser.id_user}`, userData, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+        }
+      });
+      console.log('Profile updated successfully:', response.data);
+      setIsEditing(false);
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile. Please try again.');
+    }
   };
-
-  if (isEditing) {
-    return (
-      <EditProfileContainer>
-        <EditProfileForm onSubmit={handleSaveClick}>
-          <Title>Edit Profile</Title>
-          <Label htmlFor="username">Username</Label>
-          <Input
-            id="username"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        
-          <Label htmlFor="address">Address</Label>
-          <Input
-            id="address"
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            required
-          />
-          <Button type="submit">Save Changes</Button>
-        </EditProfileForm>
-      </EditProfileContainer>
-    );
-  }
 
   return (
     <ProfileContainer>
-      <ProfileDetails>
-        <Title>User Profile</Title>
-        <Detail><DetailLabel>Name :</DetailLabel> {username}</Detail>
-        <Detail><DetailLabel>Email :</DetailLabel> {email}</Detail>
-        <Detail><DetailLabel>Role :</DetailLabel> {role}</Detail>
-        <Detail><DetailLabel>Address :</DetailLabel> {address}</Detail>
-        <Button onClick={handleEditClick}>Update Profile</Button>
-      </ProfileDetails>
+      {isEditing ? (
+        <EditProfileContainer>
+          <EditProfileForm onSubmit={handleSaveClick}>
+            <Title>Edit Profile</Title>
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              type="text"
+              value={editUser.nama_user}
+              onChange={(e) => setEditUser({ ...editUser, nama_user: e.target.value })}
+              required
+            />
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={editUser.email}
+              onChange={(e) => setEditUser({ ...editUser, email: e.target.value })}
+              required
+            />
+            <Label htmlFor="address">Address</Label>
+            <Input
+              id="address"
+              type="text"
+              value={editUser.alamat}
+              onChange={(e) => setEditUser({ ...editUser, alamat: e.target.value })}
+              required
+            />
+            <CheckboxContainer>
+              <input
+                type="checkbox"
+                id="editPassword"
+                checked={editPassword}
+                onChange={() => setEditPassword(!editPassword)}
+              />
+              <CheckboxLabel htmlFor="editPassword">Edit Password</CheckboxLabel>
+            </CheckboxContainer>
+            {editPassword && (
+              <React.Fragment>
+                <Label htmlFor="password">New Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={editUser.password}
+                  onChange={(e) => setEditUser({ ...editUser, password: e.target.value })}
+                  required
+                />
+              </React.Fragment>
+            )}
+            <Button type="submit">Save Changes</Button>
+          </EditProfileForm>
+        </EditProfileContainer>
+      ) : (
+        <ProfileDetails>
+          <Title>User Profile</Title>
+          <Detail><DetailLabel>Name:</DetailLabel> {editUser.nama_user}</Detail>
+          <Detail><DetailLabel>Email:</DetailLabel> {editUser.email}</Detail>
+          <Detail><DetailLabel>Role:</DetailLabel> {editUser.role}</Detail>
+          <Detail><DetailLabel>Address:</DetailLabel> {editUser.alamat}</Detail>
+          <Button onClick={handleEditClick}>Update Profile</Button>
+        </ProfileDetails>
+      )}
     </ProfileContainer>
   );
 };

@@ -112,7 +112,6 @@ const MedicineInventory = () => {
   }, []);
 
   const [form, setForm] = useState({
-    id: '',
     nama_obat: '',
     jenis_obat: '',
     harga: '',
@@ -146,7 +145,7 @@ const MedicineInventory = () => {
         }
       );
       setData([...data, response.data]);
-      setForm({ id: '', nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
+      setForm({ nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
     } catch (error) {
       console.error("Error adding obat:", error);
     }
@@ -179,7 +178,7 @@ const MedicineInventory = () => {
         }
       );
       setData(data.map(item => (item.id === form.id ? response.data : item)));
-      setForm({ id: '', nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
+      setForm({ nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating obat:", error);
@@ -218,7 +217,7 @@ const MedicineInventory = () => {
         <Input type="text" name="harga" placeholder="Price" value={form.harga} onChange={handleInputChange} />
         <Input type="text" name="jumlah_stok" placeholder="Quantity" value={form.jumlah_stok} onChange={handleInputChange} />
         {isEditing ? (
-          <AddButton onClick={handleSave}>Save Changes</AddButton>
+          <EditButton onClick={handleSave}>Save Changes</EditButton>
         ) : (
           <AddButton onClick={handleAdd}>Add Medicine Stock</AddButton>
         )}
@@ -226,7 +225,6 @@ const MedicineInventory = () => {
       <Table>
         <thead>
           <tr>
-            <Th>ID</Th>
             <Th>Name</Th>
             <Th>Type</Th>
             <Th>Price</Th>
@@ -237,7 +235,6 @@ const MedicineInventory = () => {
         <tbody>
           {data.map((row, index) => (
             <tr key={index}>
-              <Td>{row.id}</Td>
               <Td>{row.nama_obat}</Td>
               <Td>{row.jenis_obat}</Td>
               <Td>{row.harga}</Td>

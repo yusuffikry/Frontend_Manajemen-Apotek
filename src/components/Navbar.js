@@ -60,13 +60,11 @@ const Navbar = () => {
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
-      // Perform logout actions, e.g., clearing localStorage, etc.
-      console.log('Logging out...');
-      localStorage.clear(); // Clear localStorage for logout
-      navigate('/'); // Navigate back to the home page after logout
+      localStorage.removeItem('token'); // Hapus token dari localStorage
+      navigate('/'); // Arahkan kembali ke halaman utama
     }
   };
-
+  
   return (
     <NavbarContainer>
       <Brand to={isAdmin ? "/admin" : "/user"} exact>

@@ -147,7 +147,6 @@ const ManageUsers = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      console.log(response);
       setData(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -155,8 +154,6 @@ const ManageUsers = () => {
   };
 
   useEffect(() => {
-    console.log(localStorage.getItem("token"));
-
     fetchUsers();
   }, []);
 
@@ -188,12 +185,12 @@ const ManageUsers = () => {
     }
   };
 
-  const handleAddUser = () => {
-    if (newUser.role === null && editUser !== null ) {
-      return alert("Role tidak boleh null")
-    }
-    if (isEditing) {
-      const updateUser = async () => {
+  const handleAddUser = async () => {
+    try {
+      if (newUser.role === null && editUser === null) {
+        return alert("Role tidak boleh null")
+      }
+      if (isEditing) {
         await axios.put(
           `http://localhost:8000/api/user/${editUser.id_user}`,
           {
@@ -209,21 +206,18 @@ const ManageUsers = () => {
             },
           }
         );
-      };
-      updateUser();
-      fetchUsers();
-      setIsEditing(false);
-      setIsAdding(false);
-      setEditUser({
-        nama_user: "",
-        email: "",
-        alamat: "",
-        role: "",
-        password: "",
-      });
-    } else {
-      console.log(newUser)
-      const addUser = async () => {
+        fetchUsers();
+        setIsEditing(false);
+        setIsAdding(false);
+        setEditUser({
+          nama_user: "",
+          email: "",
+          alamat: "",
+          role: "",
+          password: "",
+        });
+        alert("User successfully updated!");
+      } else {
         await axios.post(
           "http://localhost:8000/api/user",
           {
@@ -239,50 +233,51 @@ const ManageUsers = () => {
             },
           }
         );
-      };
-      addUser();
-      fetchUsers();
-      setNewUser({
-        nama_user: "",
-        email: "",
-        alamat: "",
-        role: "",
-        password: "",
-      });
-
-      setIsAdding(false);
+        fetchUsers();
+        setNewUser({
+          nama_user: "",
+          email: "",
+          alamat: "",
+          role: "",
+          password: "",
+        });
+        setIsAdding(false);
+        alert("User successfully added!");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error occurred. Please try again later.");
     }
   };
-  const handleDeleteUser = (index) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?"
-    );
-    
-    if (confirmDelete) {
-      const userToEdit = data[index];
-      console.log(userToEdit)
-      const deleteUser = async () => {
+
+  const handleDeleteUser = async (index) => {
+    try {
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this user?"
+      );
+      if (confirmDelete) {
+        const userToEdit = data[index];
         await axios.delete(
           `http://localhost:8000/api/user/${userToEdit.id_user}`,
-
-          
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
-          
         );
-      };
-      deleteUser()
-      setEditUser({
-        nama_user: "",
-        email: "",
-        alamat: "",
-        role: "",
-        password: "",
-      });
-      fetchUsers()
+        fetchUsers();
+        setEditUser({
+          nama_user: "",
+          email: "",
+          alamat: "",
+          role: "",
+          password: "",
+        });
+        alert("User successfully deleted!");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error occurred. Please try again later.");
     }
   };
 
@@ -290,7 +285,6 @@ const ManageUsers = () => {
     setIsEditing(true);
     const userToEdit = data[index];
     setEditUser({ ...userToEdit });
-    console.log(userToEdit);
     setIsAdding(true); // Show the form
   };
 

@@ -12,6 +12,8 @@ import TransaksiPenjualan from './pagesAdmin/TransaksiPenjualan';
 import DashboardUser from './pagesUsers/DashboardUsers';
 import EditProfile from './pagesUsers/EditProfile';
 import MainDashboard from './mainPages/MainDashboard';
+import { AuthProvider } from './AuthContext';
+import ProtectedRoute from './ProtectedRoute';
 
 const AppContainer = styled.div`
   display: flex;
@@ -34,14 +36,14 @@ const App = () => {
         <Routes>
           <Route path="/" element={<MainDashboard />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={<Dashboard />} />
-          <Route path="/admin/manage-users" element={<ManageUsers />} />
-          <Route path="/admin/data-pemasok" element={<DataPemasok />} />
-          <Route path="/admin/stok-obat" element={<StokObat />} />
-          <Route path="/admin/transaksi-penjualan" element={<TransaksiPenjualan />} />
-          <Route path="/user" element={<DashboardUser />} />
-          <Route path="/user/edit-profile" element={<EditProfile />} />
-          <Route path="/user/transaksi-penjualan" element={<TransaksiPenjualan />} />
+          <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/admin/manage-users" element={<ProtectedRoute><ManageUsers /></ProtectedRoute>} />
+          <Route path="/admin/data-pemasok" element={<ProtectedRoute><DataPemasok /></ProtectedRoute>} />
+          <Route path="/admin/stok-obat" element={<ProtectedRoute><StokObat /></ProtectedRoute>} />
+          <Route path="/admin/transaksi-penjualan" element={<ProtectedRoute><TransaksiPenjualan /></ProtectedRoute>} />
+          <Route path="/user" element={<ProtectedRoute><DashboardUser /></ProtectedRoute>} />
+          <Route path="/user/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+          <Route path="/user/transaksi-penjualan" element={<ProtectedRoute><TransaksiPenjualan /></ProtectedRoute>} />
         </Routes>
       </MainContent>
       {!isAuthPage && <Footer />}
@@ -51,7 +53,9 @@ const App = () => {
 
 const AppWrapper = () => (
   <Router>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </Router>
 );
 
