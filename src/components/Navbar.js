@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Menggunakan useNavigate untuk navigasi
 
 const NavbarContainer = styled.div`
   background-color: #3498db;
@@ -53,15 +54,15 @@ const LogoutButton = styled.button`
 `;
 
 const Navbar = () => {
-  const navigate = useNavigate(); // Untuk navigasi halaman
-  const location = useLocation();
+  const navigate = useNavigate(); // Menggunakan useNavigate untuk navigasi
+  const location = useLocation(); // Menggunakan useLocation untuk mendapatkan lokasi saat ini
   const isAdmin = location.pathname.startsWith('/admin');
   const isUser = location.pathname.startsWith('/user');
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
-      localStorage.removeItem('token'); // Hapus token dari localStorage
-      navigate('/'); // Arahkan kembali ke halaman utama
+      localStorage.removeItem('token');
+      navigate('/'); // Menggunakan navigate untuk kembali ke halaman utama
     }
   };
   

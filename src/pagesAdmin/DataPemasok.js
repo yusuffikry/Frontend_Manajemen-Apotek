@@ -202,8 +202,13 @@ const DataPemasok = () => {
           return;
         }
   
-        const idToDelete = data[index].id;
-        await axios.delete(`http://localhost:8000/api/pemasok/${idToDelete.id}`, {
+        const idToDelete = data[index].id; // Ambil id langsung dari data pemasok
+        if (!idToDelete) {
+          console.error('No id found for deletion.');
+          return;
+        }
+  
+        await axios.delete(`http://localhost:8000/api/pemasok/${idToDelete}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -217,6 +222,7 @@ const DataPemasok = () => {
       }
     }
   };
+  
 
   return (
     <Container>

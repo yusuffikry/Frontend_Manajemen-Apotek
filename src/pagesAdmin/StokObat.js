@@ -112,6 +112,7 @@ const MedicineInventory = () => {
   }, []);
 
   const [form, setForm] = useState({
+    id: '',
     nama_obat: '',
     jenis_obat: '',
     harga: '',
@@ -129,14 +130,21 @@ const MedicineInventory = () => {
   };
 
   const handleAdd = async () => {
+    const { nama_obat, jenis_obat, harga, jumlah_stok } = form;
+
+    if (!nama_obat || !jenis_obat || !harga || !jumlah_stok) {
+      alert("All fields must be filled!");
+      return;
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:8000/api/obat/",
         {
-          nama_obat: form.nama_obat,
-          jenis_obat: form.jenis_obat,
-          harga: form.harga,
-          jumlah_stok: form.jumlah_stok,
+          nama_obat,
+          jenis_obat,
+          harga,
+          jumlah_stok,
         },
         {
           headers: {
@@ -145,32 +153,40 @@ const MedicineInventory = () => {
         }
       );
       setData([...data, response.data]);
-      setForm({ nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
+      setForm({ id: '', nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
+      alert('Medicine stock added successfully!');
     } catch (error) {
       console.error("Error adding obat:", error);
     }
   };
 
   const handleEdit = (item) => {
-    setForm(item);
+    setForm({
+      id: item.id_obat, // pastikan menggunakan id yang benar dari data backend
+      nama_obat: item.nama_obat,
+      jenis_obat: item.jenis_obat,
+      harga: item.harga,
+      jumlah_stok: item.jumlah_stok
+    });
     setIsEditing(true);
-    console.log(form)
   };
 
   const handleSave = async () => {
-    if (!form.id_obat) {
-      console.error("No ID provided for the update");
+    const { id, nama_obat, jenis_obat, harga, jumlah_stok } = form;
+
+    if (!id || !nama_obat || !jenis_obat || !harga || !jumlah_stok) {
+      alert("All fields must be filled!");
       return;
     }
 
     try {
-       await axios.put(
-        `http://localhost:8000/api/obat/${form.id_obat}`,
+      const response = await axios.put(
+        `http://localhost:8000/api/obat/${id}`,
         {
-          nama_obat: form.nama_obat,
-          jenis_obat: form.jenis_obat,
-          harga: form.harga,
-          jumlah_stok: form.jumlah_stok,
+          nama_obat,
+          jenis_obat,
+          harga,
+          jumlah_stok,
         },
         {
           headers: {
@@ -178,11 +194,10 @@ const MedicineInventory = () => {
           },
         }
       );
-      
-      
-      setForm({ nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
+      setData(data.map(item => (item.id_obat === id ? response.data : item)));
+      setForm({ id: '', nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
       setIsEditing(false);
-
+      alert('Medicine stock updated successfully!');
     } catch (error) {
       console.error("Error updating obat:", error);
     }
@@ -194,7 +209,7 @@ const MedicineInventory = () => {
       return;
     }
 
-    if (window.confirm(`Are you sure you want to delete the medicine with ID ${id}?`)) {
+    if (window.confirm(`Are you sure you want to delete this?`)) {
       try {
         await axios.delete(
           `http://localhost:8000/api/obat/${id}`,
@@ -204,7 +219,8 @@ const MedicineInventory = () => {
             },
           }
         );
-        fetchObat()
+        setData(data.filter(item => item.id_obat !== id));
+        alert('Medicine stock deleted successfully!');
       } catch (error) {
         console.error("Error deleting obat:", error);
       }
