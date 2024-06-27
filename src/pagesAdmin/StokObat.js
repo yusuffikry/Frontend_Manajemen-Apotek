@@ -154,17 +154,18 @@ const MedicineInventory = () => {
   const handleEdit = (item) => {
     setForm(item);
     setIsEditing(true);
+    console.log(form)
   };
 
   const handleSave = async () => {
-    if (!form.id) {
+    if (!form.id_obat) {
       console.error("No ID provided for the update");
       return;
     }
 
     try {
-      const response = await axios.put(
-        `http://localhost:8000/api/obat/${form.id}`,
+       await axios.put(
+        `http://localhost:8000/api/obat/${form.id_obat}`,
         {
           nama_obat: form.nama_obat,
           jenis_obat: form.jenis_obat,
@@ -177,9 +178,11 @@ const MedicineInventory = () => {
           },
         }
       );
-      setData(data.map(item => (item.id === form.id ? response.data : item)));
+      
+      
       setForm({ nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
       setIsEditing(false);
+
     } catch (error) {
       console.error("Error updating obat:", error);
     }
@@ -201,7 +204,7 @@ const MedicineInventory = () => {
             },
           }
         );
-        setData(data.filter(item => item.id !== id));
+        fetchObat()
       } catch (error) {
         console.error("Error deleting obat:", error);
       }
@@ -242,7 +245,7 @@ const MedicineInventory = () => {
               <Td>
                 <ButtonContainer>
                   <EditButton onClick={() => handleEdit(row)}>Update</EditButton>
-                  <DeleteButton onClick={() => handleDelete(row.id)}>Delete</DeleteButton>
+                  <DeleteButton onClick={() => handleDelete(row.id_obat)}>Delete</DeleteButton>
                 </ButtonContainer>
               </Td>
             </tr>

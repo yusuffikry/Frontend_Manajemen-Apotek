@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const TableContainer = styled.div`
   width: 90%;
@@ -14,7 +15,7 @@ const Table = styled.table`
   th, td {
     padding: 0.75rem;
     border: 1px solid #ddd;
-    text-align: center; /* Center align text in all table cells */
+    text-align: center;
   }
 
   th {
@@ -28,8 +29,8 @@ const Table = styled.table`
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: center; /* Center align buttons horizontally */
-  gap: 0.5rem; /* Space between buttons */
+  justify-content: center;
+  gap: 0.5rem;
 `;
 
 const Button = styled.button`
@@ -46,7 +47,7 @@ const Button = styled.button`
 
 const AddButtonContainer = styled.div`
   display: flex;
-  justify-content: flex-end; /* Align button to the right */
+  justify-content: flex-end;
   margin: 1rem 0;
 `;
 
@@ -82,6 +83,14 @@ const DeleteButton = styled(Button)`
   }
 `;
 
+const CloseButton = styled(Button)`
+  background-color: #95a5a6;
+
+  &:hover {
+    background-color: #7f8c8d;
+  }
+`;
+
 const DetailContainer = styled.div`
   width: 40%;
   margin: 1rem auto;
@@ -103,11 +112,10 @@ const DetailItem = styled.p`
   color: #555;
   position: relative;
 
-  /* Underline effect */
   &:not(:last-child)::after {
     content: '';
     position: absolute;
-    bottom: -0.2rem; /* Adjust as needed */
+    bottom: -0.2rem;
     left: 0;
     width: 100%;
     height: 2px;
@@ -126,10 +134,10 @@ const FormContainer = styled.div`
   margin: 1rem auto;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center items horizontally */
+  align-items: center;
   max-width: 600px;
   width: 100%;
-  text-align: center; /* Center text inside the container */
+  text-align: center;
 `;
 
 const Input = styled.input`
@@ -147,35 +155,18 @@ const Label = styled.label`
   color: white;
 `;
 
-const CloseButton = styled(Button)`
-  background-color: #95a5a6;
+const flexStyle = {
+  display: 'flex',
+};
 
-  &:hover {
-    background-color: #7f8c8d;
-  }
-`;
+const flexGrowStyle = {
+  flexGrow: 1,
+};
 
 const SalesTransactions = () => {
-  const [data, setData] = useState([
-    {
-      ID: 'user1',
-      transaction_date: '2024-06-21',
-      total_payment: '50000',
-      medicine_id: 'Medicine1',
-      quantuty_purchased: '2',
-      unit_price: '25000'
-    },
-    {
-      ID: 'user2',
-      transaction_date: '2024-05-21',
-      total_payment: '30000',
-      medicine_id: 'Medicine2',
-      quantuty_purchased: '1',
-      unit_price: '30000'
-    },
-    // Add more sample data as needed
-  ]);
-
+  const [data, setData] = useState([]);
+  const [selectedObat, setSelectedObat] = useState([]);
+  const [listObat, setListObat] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [newTransaction, setNewTransaction] = useState({
@@ -188,9 +179,59 @@ const SalesTransactions = () => {
   });
   const [showForm, setShowForm] = useState(false);
 
-  const handleDetail = (transaction) => {
-    setSelectedTransaction(transaction);
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/transaksi", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setData(response.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   };
+ 
+
+  useEffect(() => {
+    fetchUsers();
+    fetchObat();
+  }, []);
+
+  const fetchObat = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/obat", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setListObat(response.data);
+    } catch (error) {
+      console.error("Error fetching obat:", error);
+    }
+  };
+
+  const [selectedItemDetail, setSelectedItemDetail] = useState(null);
+
+  const handleDetail = async (transaction) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8000/api/transaksi/details/${transaction.id_transaksi_penjualan}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    setSelectedTransaction(response.data); // Set data transaksi terpilih
+  } catch (error) {
+    console.error("Error fetching transaction details:", error);
+  }
+};
+
+  
 
   const handleEdit = (transaction) => {
     setEditingTransaction(transaction);
@@ -201,13 +242,14 @@ const SalesTransactions = () => {
     if (window.confirm(`Are you sure you want to delete the transaction with ID: ${transaction.ID}?`)) {
       const updatedData = data.filter(item => item.ID !== transaction.ID);
       setData(updatedData);
-      setSelectedTransaction(null); // Clear selected transaction if any
-      setEditingTransaction(null); // Clear editing transaction if any
+      setSelectedTransaction(null); 
+      setEditingTransaction(null); 
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     if (editingTransaction) {
       setEditingTransaction({
         ...editingTransaction,
@@ -221,7 +263,7 @@ const SalesTransactions = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (editingTransaction) {
       const updatedData = data.map(item =>
         item.ID === editingTransaction.ID ? editingTransaction : item
@@ -229,17 +271,62 @@ const SalesTransactions = () => {
       setData(updatedData);
       setEditingTransaction(null);
     } else {
-      setData([...data, newTransaction]);
-      setNewTransaction({
-        ID: '',
-        transaction_date: '',
-        total_payment: '',
-        medicine_id: '',
-        quantuty_purchased: '',
-        unit_price: ''
-      });
+      const transaksi = {
+        "transaksi": {
+          "tanggal_transaksi": "2024-06-28",
+          "total_pembayaran": 0
+        }, 
+        "details" : 
+          selectedObat.map(obat => ({
+            id_obat: obat.id_obat,
+            jumlah_beli: parseInt(obat.jumlah_beli), // pastikan jumlah_beli diubah menjadi number jika perlu
+            harga_satuan: obat.harga_satuan || 0 
+          }))
+        }
+
+        await axios.post(
+          "http://localhost:8000/api/transaksi", 
+            transaksi
+          ,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+      console.log(transaksi);
+      setSelectedObat()
     }
-    setShowForm(false); // Hide the form after saving
+    
+    setShowForm(false); 
+  };
+
+  const handleSelected = () => {
+    const id = newTransaction.id_obat;
+    setNewTransaction({});
+    console.log(listObat);
+    const selectedItem = listObat.filter(item => item.id_obat === id);
+    console.log(selectedItem);
+    console.log(id);
+    console.log(newTransaction.id_obat);
+
+    
+    if (!selectedItem) {
+      alert(`Item with id ${id} not found`);
+      return;
+    }
+    
+    const Obat = {
+      id_obat: id,
+      jumlah_beli: 1,
+      harga_satuan: selectedItem.harga_satuan, 
+    };
+  
+    setSelectedObat(prevSelectedObat => [
+      ...prevSelectedObat,
+      Obat
+    ]);
+    console.log("listObat"+selectedObat.length);
   };
 
   const handleCloseDetail = () => {
@@ -248,8 +335,17 @@ const SalesTransactions = () => {
 
   const handleShowForm = () => {
     setShowForm(true);
-    setEditingTransaction(null); // Clear any editing transaction data
+    setEditingTransaction(null); 
   };
+
+  const handleJumlahBeliChange = (e, index) => {
+    const { value } = e.target;
+    const updatedObat = [...selectedObat];
+    updatedObat[index].jumlah_beli = value;
+    setSelectedObat(updatedObat);
+    console.log(value);
+  };
+  
 
   const handleCloseForm = () => {
     setShowForm(false);
@@ -261,27 +357,44 @@ const SalesTransactions = () => {
       quantuty_purchased: '',
       unit_price: ''
     });
+    setSelectedObat()
   };
 
   return (
     <TableContainer>
       <h2>Sales Transactions</h2>
       {selectedTransaction && (
-        <DetailContainer>
-          <DetailTitle>Transaction Details</DetailTitle>
-          <DetailItem><DetailLabel>ID :</DetailLabel> {selectedTransaction.ID}</DetailItem>
-          <DetailItem><DetailLabel>Transaction Date :</DetailLabel> {selectedTransaction.transaction_date}</DetailItem>
-          <DetailItem><DetailLabel>Total Payment :</DetailLabel> {selectedTransaction.total_payment}</DetailItem>
-          <DetailItem><DetailLabel>Medicine ID :</DetailLabel> {selectedTransaction.medicine_id}</DetailItem>
-          <DetailItem><DetailLabel>Quantity Purcashed :</DetailLabel> {selectedTransaction.quantuty_purchased}</DetailItem>
-          <DetailItem><DetailLabel>Unit Price :</DetailLabel> {selectedTransaction.unit_price}</DetailItem>
-          <ButtonContainer>
-            <CloseButton onClick={handleCloseDetail}>Close</CloseButton>
-          </ButtonContainer>
-        </DetailContainer>
-      )}
+  <FormContainer>
+    <h3>Transaction Details</h3>
+    <Label>ID Transaksi: {selectedTransaction.id_transaksi_penjualan}</Label>
+    <Label>Tanggal Transaksi: {selectedTransaction.tanggal_transaksi}</Label>
+    <Label>Total Pembayaran: {selectedTransaction.total_pembayaran}</Label>
+    {/* Tambahkan komponen atau tabel untuk menampilkan detail obat */}
+    {/* Misalnya, Anda dapat menampilkan dalam bentuk tabel */}
+    <Table>
+      <thead>
+        <tr>
+          <th>ID Obat</th>
+          <th>Jumlah Beli</th>
+          <th>Harga Satuan</th>
+        </tr>
+      </thead>
+      <tbody>
+        {selectedTransaction.details.map((detail, index) => (
+          <tr key={index}>
+            <td>{detail.id_obat}</td>
+            <td>{detail.jumlah_beli}</td>
+            <td>{detail.harga_satuan}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+    <CloseButton onClick={handleCloseDetail}>Close</CloseButton>
+  </FormContainer>
+)}
 
-      {!showForm && ( // Conditionally render the Add button
+
+      {!showForm && (
         <AddButtonContainer>
           <AddButton onClick={handleShowForm}>Add New Transaction</AddButton>
         </AddButtonContainer>
@@ -289,61 +402,52 @@ const SalesTransactions = () => {
       {showForm && (
         <FormContainer>
           <h3>{editingTransaction ? 'Edit Transaction' : 'Add New Transaction'}</h3>
-          <Label htmlFor="ID">ID</Label>
-          <Input
-            id="ID"
-            type="text"
-            name="ID"
-            placeholder="ID"
-            value={editingTransaction ? editingTransaction.ID : newTransaction.ID}
-            onChange={handleInputChange}
-            disabled={editingTransaction}
-          />
-          <Label htmlFor="transaction_date">Transaction Date</Label>
-          <Input
-            id="transaction_date"
-            type="text"
-            name="transaction_date"
-            placeholder="Transaction Date"
-            value={editingTransaction ? editingTransaction.transaction_date : newTransaction.transaction_date}
-            onChange={handleInputChange}
-          />
-          <Label htmlFor="total_payment">Total Payment</Label>
-          <Input
-            id="total_payment"
-            type="text"
-            name="total_payment"
-            placeholder="Total Payment"
-            value={editingTransaction ? editingTransaction.total_payment : newTransaction.total_payment}
-            onChange={handleInputChange}
-          />
-          <Label htmlFor="medicine_id">Medicine ID</Label>
-          <Input
-            id="medicine_id"
-            type="text"
-            name="medicine_id"
-            placeholder="Medicine ID"
-            value={editingTransaction ? editingTransaction.medicine_id : newTransaction.medicine_id}
-            onChange={handleInputChange}
-          />
-          <Label htmlFor="quantuty_purchased">Quantity Purchased</Label>
-          <Input
-            id="quantuty_purchased"
-            type="text"
-            name="quantuty_purchased"
-            placeholder="Quantity Purcashed"
-            value={editingTransaction ? editingTransaction.quantuty_purchased : newTransaction.quantuty_purchased}
-            onChange={handleInputChange}
-          />
-          <Label htmlFor="unit_price">Unit Price</Label>
-          <Input
-            id="unit_price"
-            type="text"
-            name="unit_price"
-            placeholder="Unit Price"
-            value={editingTransaction ? editingTransaction.unit_price : newTransaction.unit_price}
-            onChange={handleInputChange}
-          />
+          <div style={flexStyle}>
+            <div style={flexGrowStyle}>
+              <Label htmlFor="nama_obat">Obat</Label>
+              <select
+                  name="id_obat" // pastikan nama ini cocok dengan nama properti di state
+                  value={newTransaction.id_obat}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select Obat</option>
+                  {listObat.map((row, index) => (
+                    <option value={`${row.id_obat}`} key={index}>{row.nama_obat}</option>
+                  ))}
+                </select>
+
+            </div>
+            <div>
+            <EditButton onClick={handleSelected}> + </EditButton>
+            </div>
+          </div>
+          <Table>
+          {selectedObat.length > 0 ? (
+            <tbody>
+              {selectedObat.map((row, index) => (
+                <tr key={index}>
+                  <td>{row.id_obat}</td>
+                  <td>
+                    <input
+                      name='jumlah_beli'
+                      type='number'
+                      value={row.jumlah_beli}
+                      onChange={(e) => handleJumlahBeliChange(e, index)}
+                    />
+                  </td>
+                  <td>{row.harga_satuan}</td>
+                </tr>
+              ))}
+            </tbody>
+          ) : (
+            <tbody>
+              <tr>
+                <td colSpan="3">No items selected</td>
+              </tr>
+            </tbody>
+            )}
+
+          </Table>
           <ButtonContainer>
             <EditButton onClick={handleSave}>Save</EditButton>
             <CloseButton onClick={handleCloseForm}>Cancel</CloseButton>
@@ -362,12 +466,16 @@ const SalesTransactions = () => {
         <tbody>
           {data.map((row, index) => (
             <tr key={index}>
-              <td>{row.ID}</td>
-              <td>{row.transaction_date}</td>
-              <td>{row.total_payment}</td>
+              <td>{row.id_transaksi_penjualan}</td>
+              <td>{row.tanggal_transaksi}</td>
+              <td>{row.total_pembayaran}</td>
               <td>
+
+
                 <ButtonContainer>
                   <DetailButton onClick={() => handleDetail(row)}>Detail</DetailButton>
+                  
+
                   <EditButton onClick={() => handleEdit(row)}>Update</EditButton>
                   <DeleteButton onClick={() => handleDelete(row)}>Delete</DeleteButton>
                 </ButtonContainer>
