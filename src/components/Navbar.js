@@ -62,6 +62,7 @@ const Navbar = () => {
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
       localStorage.removeItem('token');
+      localStorage.removeItem('isAuthenticated');
       navigate('/'); // Menggunakan navigate untuk kembali ke halaman utama
     }
   };

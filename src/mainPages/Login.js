@@ -81,6 +81,32 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const me = async (access_token) => {
+    try {
+      
+      const userRes = await axios.get("http://localhost:8000/auth/me", {
+        headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+    const user = userRes.data;
+    if (user.role === 0 || user.role === 2) {
+      navigate('/admin');
+    } else if (user.role === 1) {
+      navigate('/user');
+    } else {
+      console.error('Invalid role');
+    }
+  } catch (error) {
+    console.error("Me error:", error);
+  }
+  }
+
+  // if (localStorage.getItem('token') && localStorage.getItem('isAuthenticated')){
+  //   const access_token = localStorage.getItem('token');
+  //   me(access_token)
+  // }
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (email.length > 1 && password.length > 1) {
@@ -96,26 +122,16 @@ const Login = () => {
           }
         });
 
+        if (res.status !== 200) {
+          alert('Login failed');
+          return;
+        }
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem("token", res.data.access_token);
 
-        const userRes = await axios.get("http://localhost:8000/auth/me", {
-          headers: {
-            Authorization: `Bearer ${res.data.access_token}`,
-          },
-        });
+        
 
-        const userRole = userRes.data.role; // Assuming the role is in the response data
-        console.log("User role:", userRole); // Debugging line
-
-        if (userRole === 0 || userRole === 2) {
-          navigate('/admin');        
-        } else if (userRole === 1) {
-          navigate('/user');
-        } else {
-          console.error("Invalid user role:", userRole);
-          setError(`Invalid user role: ${userRole}`);
-        }
+        me(res.data.access_token)
       } catch (error) {
         console.error("Login error:", error);
         setError('Invalid username or password. Please try again.');

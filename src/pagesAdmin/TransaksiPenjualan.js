@@ -169,17 +169,12 @@ const SalesTransactions = () => {
   const [listObat, setListObat] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [editingTransaction, setEditingTransaction] = useState(null);
-  const [newTransaction, setNewTransaction] = useState({
-    ID: '',
-    transaction_date: '',
-    total_payment: '',
-    medicine_id: '',
-    quantuty_purchased: '',
-    unit_price: ''
-  });
+  const [total,setTotal] = useState(0);
+  const [newTransaction, setNewTransaction] = useState({});
   const [showForm, setShowForm] = useState(false);
+  const [user, setUser] = useState();
 
-  const fetchUsers = async () => {
+  const fetchTransaksi = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/transaksi", {
         headers: {
@@ -187,16 +182,19 @@ const SalesTransactions = () => {
         },
       });
       setData(response.data);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
- 
+
+
+  
 
   useEffect(() => {
-    fetchUsers();
+    fetchTransaksi();
     fetchObat();
+    fetchCurrentUser();
   }, []);
 
   const fetchObat = async () => {
@@ -212,7 +210,19 @@ const SalesTransactions = () => {
     }
   };
 
-  const [selectedItemDetail, setSelectedItemDetail] = useState(null);
+  const fetchCurrentUser = async () => {
+    await axios.get("http://localhost:8000/auth/me", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    }).then((res) => {
+      setUser(res.data);
+      
+    }).catch((err) => {
+      console.error("Error fetching current user:", err);
+    })
+
+  }
+
+  // const [selectedItemDetail, setSelectedItemDetail] = useState(null);
 
   const handleDetail = async (transaction) => {
   try {
@@ -224,8 +234,7 @@ const SalesTransactions = () => {
         },
       }
     );
-
-    setSelectedTransaction(response.data); // Set data transaksi terpilih
+    setSelectedTransaction(response.data);
   } catch (error) {
     console.error("Error fetching transaction details:", error);
   }
@@ -233,23 +242,49 @@ const SalesTransactions = () => {
 
   
 
-  const handleEdit = (transaction) => {
-    setEditingTransaction(transaction);
-    setShowForm(true);
+  const handleEdit = async (transaction) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/transaksi/details/${transaction.id_transaksi_penjualan}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response.data)
+      setEditingTransaction(response.data); // Set data transaksi terpilih
+    } catch (error) {
+      console.error("Error fetching transaction details:", error);
+    }
   };
 
-  const handleDelete = (transaction) => {
-    if (window.confirm(`Are you sure you want to delete the transaction with ID: ${transaction.ID}?`)) {
-      const updatedData = data.filter(item => item.ID !== transaction.ID);
-      setData(updatedData);
+  useEffect(() => {
+    // console.log(editingTransaction);
+    // if(editingTransaction != null) setTotal(editingTransaction.details.reduce((acc, item) => acc + item.jumlah_beli * item.harga_satuan, 0));
+    if(selectedObat != null) setTotal(selectedObat.reduce((acc, item) => acc + item.jumlah_beli * item.harga_satuan, 0));
+    console.log(total);
+  }, [selectedObat]);
+  
+  useEffect(() => {
+    if(editingTransaction == null) return
+    console.log(editingTransaction);
+    if(editingTransaction != null) setTotal(editingTransaction.details.reduce((acc, item) => acc + item.jumlah_beli * item.harga_satuan, 0));
+    setShowForm(true);
+  }, [editingTransaction])
+
+  const handleDelete = async (transaction) => {
+    if (window.confirm(`Are you sure you want to delete the transaction with ID: ${transaction.id_transaksi_penjualan}?`)) {
+      await axios.delete(`http://localhost:8000/api/transaksi/${transaction.id_transaksi_penjualan}`, {headers : {Authorization: `Bearer ${localStorage.getItem("token")}`}});
       setSelectedTransaction(null); 
-      setEditingTransaction(null); 
+      setEditingTransaction(null);
+      fetchTransaksi(); 
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
+    // console.log(name, value);
     if (editingTransaction) {
       setEditingTransaction({
         ...editingTransaction,
@@ -264,26 +299,46 @@ const SalesTransactions = () => {
   };
 
   const handleSave = async () => {
+    const currentDate = new Date().toISOString().split('T')[0];
     if (editingTransaction) {
-      const updatedData = data.map(item =>
-        item.ID === editingTransaction.ID ? editingTransaction : item
-      );
-      setData(updatedData);
+      const id_detail = editingTransaction.transaksi.id_transaksi_penjualan;
+      const transaksi = {
+        "transaksi": {
+          "tanggal_transaksi": editingTransaction.transaksi.tanggal_transaksi,
+          "total_pembayaran": total
+        }, 
+        "details" : 
+          editingTransaction.details.map(obat => ({
+            id_obat: obat.id_obat,
+            jumlah_beli: parseInt(obat.jumlah_beli), // pastikan jumlah_beli diubah menjadi number jika perlu
+            harga_satuan: obat.harga_satuan || 0
+          }))
+        }
+        await axios.put(
+          `http://localhost:8000/api/transaksi/${id_detail}` ,
+            transaksi
+          ,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
       setEditingTransaction(null);
     } else {
       const transaksi = {
         "transaksi": {
-          "tanggal_transaksi": "2024-06-28",
-          "total_pembayaran": 0
+          "tanggal_transaksi": currentDate,
+          "total_pembayaran": total
         }, 
         "details" : 
           selectedObat.map(obat => ({
             id_obat: obat.id_obat,
             jumlah_beli: parseInt(obat.jumlah_beli), // pastikan jumlah_beli diubah menjadi number jika perlu
-            harga_satuan: obat.harga_satuan || 0 
+            harga_satuan: obat.harga_satuan || 0
           }))
         }
-
+        console.log(transaksi)
         await axios.post(
           "http://localhost:8000/api/transaksi", 
             transaksi
@@ -294,40 +349,82 @@ const SalesTransactions = () => {
             },
           }
         );
-      console.log(transaksi);
-      setSelectedObat()
+      // console.log(transaksi);
+      setSelectedObat(null)
     }
-    
+    fetchTransaksi();
     setShowForm(false); 
   };
 
   const handleSelected = () => {
-    const id = newTransaction.id_obat;
-    setNewTransaction({});
-    console.log(listObat);
-    const selectedItem = listObat.filter(item => item.id_obat === id);
-    console.log(selectedItem);
-    console.log(id);
-    console.log(newTransaction.id_obat);
-
-    
-    if (!selectedItem) {
+    if(editingTransaction){
+      const id = editingTransaction.id_obat;
+      // console.log(editingTransaction.id_obat)
+      // console.log(listObat);
+      setNewTransaction({});
+      const selectedItem = listObat.filter((item) => item.id_obat == id);
+      if(editingTransaction.details.find((item) => item.id_obat == id)){
+        alert(`Item with id ${id} already exists`);
+        return;
+      }
+      if (selectedItem.length ==0 ) {
       alert(`Item with id ${id} not found`);
-      return;
-    }
+      return console.log("Item not found");
+      }
+      // console.log(selectedItem);
+      const newObat = {
+        nama_obat: selectedItem[0].nama_obat,
+        id_obat: id,
+        jumlah_beli: 1,
+        harga_satuan: selectedItem[0].harga,
+      };
+      setEditingTransaction((prevEditingTransaction) => {
+        return { ...prevEditingTransaction, details: [...prevEditingTransaction.details, newObat] };
+      });
+      // console.log(editingTransaction);
     
-    const Obat = {
-      id_obat: id,
-      jumlah_beli: 1,
-      harga_satuan: selectedItem.harga_satuan, 
-    };
-  
-    setSelectedObat(prevSelectedObat => [
-      ...prevSelectedObat,
-      Obat
-    ]);
-    console.log("listObat"+selectedObat.length);
+    } else {
+      const id = newTransaction.id_obat;
+      // console.log(id);
+      // console.log(listObat);
+      const selectedItem = listObat.filter((item) => 
+        item.id_obat == id
+        // console.log(item.id_obat==id);
+      );
+      // console.log(selectedItem);
+      // console.log(id);
+      // console.log(newTransaction.id_obat);
+      
+      if(selectedObat.find((item) => item.id_obat == id)){
+        alert(`Item with id ${id} already exists`);
+        return;
+      }
+      if (selectedItem.length ==0 ) {
+        alert(`Item with id ${id} not found`);
+        return;
+      }
+      
+      const Obat = {
+        nama_obat: selectedItem[0].nama_obat,
+        id_obat: id,
+        jumlah_beli: 1,
+        harga_satuan: selectedItem[0].harga, 
+      };
+
+      console.log("ini " + Obat.nama_obat);
+    
+      setSelectedObat(prevSelectedObat => [
+        ...prevSelectedObat,
+        Obat
+      ]);
+      console.log(selectedObat);
+      // console.log("listObat"+selectedObat.length);
+    }
+    // console.log(editingTransaction.details);
+    
   };
+
+  // useEffect(() => {console.log(newTransaction)}, [newTransaction]);
 
   const handleCloseDetail = () => {
     setSelectedTransaction(null);
@@ -343,62 +440,54 @@ const SalesTransactions = () => {
     const updatedObat = [...selectedObat];
     updatedObat[index].jumlah_beli = value;
     setSelectedObat(updatedObat);
-    console.log(value);
+    // console.log(value);
   };
   
 
   const handleCloseForm = () => {
     setShowForm(false);
-    setNewTransaction({
-      ID: '',
-      transaction_date: '',
-      total_payment: '',
-      medicine_id: '',
-      quantuty_purchased: '',
-      unit_price: ''
-    });
-    setSelectedObat()
+    setNewTransaction({});
+    setEditingTransaction(null);
+    setSelectedObat([])
   };
 
   return (
     <TableContainer>
-      <h2>Sales Transactions</h2>
       {selectedTransaction && (
-  <FormContainer>
-    <h3>Transaction Details</h3>
-    <Label>ID Transaksi: {selectedTransaction.id_transaksi_penjualan}</Label>
-    <Label>Tanggal Transaksi: {selectedTransaction.tanggal_transaksi}</Label>
-    <Label>Total Pembayaran: {selectedTransaction.total_pembayaran}</Label>
-    {/* Tambahkan komponen atau tabel untuk menampilkan detail obat */}
-    {/* Misalnya, Anda dapat menampilkan dalam bentuk tabel */}
-    <Table>
-      <thead>
-        <tr>
-          <th>ID Obat</th>
-          <th>Jumlah Beli</th>
-          <th>Harga Satuan</th>
-        </tr>
-      </thead>
-      <tbody>
-        {selectedTransaction.details.map((detail, index) => (
-          <tr key={index}>
-            <td>{detail.id_obat}</td>
-            <td>{detail.jumlah_beli}</td>
-            <td>{detail.harga_satuan}</td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
-    <CloseButton onClick={handleCloseDetail}>Close</CloseButton>
-  </FormContainer>
-)}
+        <FormContainer>
+          <h3>Transaction Details</h3>
+          <Label>ID Transaksi: {selectedTransaction.transaksi.id_transaksi_penjualan}</Label>
+          <Label>Tanggal Transaksi: {selectedTransaction.transaksi.tanggal_transaksi}</Label>
+          <Label>Total Pembayaran: {selectedTransaction.transaksi.total_pembayaran}</Label>
+          <Table>
+            <thead>
+              <tr>
+                <th>ID Obat</th>
+                <th>Jumlah Beli</th>
+                <th>Harga Satuan</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedTransaction.details.map((detail, index) => (
+                <tr key={index}>
+                  <td>{listObat.find(item => item.id_obat == detail.id_obat).nama_obat}</td>
+                  <td>{detail.jumlah_beli}</td>
+                  <td>{detail.harga_satuan}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <CloseButton onClick={handleCloseDetail}>Close</CloseButton>
+        </FormContainer>
+      )}
 
 
-      {!showForm && (
+{!showForm && (
         <AddButtonContainer>
           <AddButton onClick={handleShowForm}>Add New Transaction</AddButton>
         </AddButtonContainer>
       )}
+      
       {showForm && (
         <FormContainer>
           <h3>{editingTransaction ? 'Edit Transaction' : 'Add New Transaction'}</h3>
@@ -406,48 +495,70 @@ const SalesTransactions = () => {
             <div style={flexGrowStyle}>
               <Label htmlFor="nama_obat">Obat</Label>
               <select
-                  name="id_obat" // pastikan nama ini cocok dengan nama properti di state
-                  value={newTransaction.id_obat}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Select Obat</option>
-                  {listObat.map((row, index) => (
-                    <option value={`${row.id_obat}`} key={index}>{row.nama_obat}</option>
-                  ))}
-                </select>
-
+                name="id_obat"
+                value={newTransaction.id_obat}
+                onChange={handleInputChange}
+              >
+                <option value="">Select Obat</option>
+                {listObat.map((row, index) => (
+                  <option value={`${row.id_obat}`} key={index}>{row.nama_obat}</option>
+                ))}
+              </select>
             </div>
             <div>
-            <EditButton onClick={handleSelected}> + </EditButton>
+              <EditButton onClick={handleSelected}> + </EditButton>
             </div>
           </div>
-          <Table>
-          {selectedObat.length > 0 ? (
-            <tbody>
-              {selectedObat.map((row, index) => (
-                <tr key={index}>
-                  <td>{row.id_obat}</td>
-                  <td>
-                    <input
-                      name='jumlah_beli'
-                      type='number'
-                      value={row.jumlah_beli}
-                      onChange={(e) => handleJumlahBeliChange(e, index)}
-                    />
-                  </td>
-                  <td>{row.harga_satuan}</td>
-                </tr>
-              ))}
-            </tbody>
-          ) : (
-            <tbody>
-              <tr>
-                <td colSpan="3">No items selected</td>
-              </tr>
-            </tbody>
-            )}
+          {editingTransaction && (
 
+
+              <><Label>ID Transaksi: {editingTransaction.transaksi.id_transaksi_penjualan}</Label><Label>Tanggal Transaksi: {editingTransaction.transaksi.tanggal_transaksi}</Label><Label>Total Pembayaran: {total}</Label><Table>
+              <thead>
+                <tr>
+                  <th>ID Obat</th>
+                  <th>Jumlah Beli</th>
+                  <th>Harga Satuan</th>
+                </tr>
+              </thead>
+              <tbody>
+                {editingTransaction.details.map((detail, index) => (
+                  <tr key={index}>
+                    <td>{listObat.find(item => item.id_obat == detail.id_obat).nama_obat}</td>
+                    <td>{detail.jumlah_beli}</td>
+                    <td>{detail.harga_satuan}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table></>
+
+          )}
+          {!editingTransaction && (
+          <Table>
+            <Label>Total Pembayaran: {total}</Label>
+            <tbody>
+              {selectedObat ? (
+                selectedObat.map((row, index) => (
+                  <tr key={index}>
+                    <td>{row.nama_obat}</td>
+                    <td>
+                      <input
+                        name="jumlah_beli"
+                        type="number"
+                        value={row.jumlah_beli}
+                        onChange={(e) => handleJumlahBeliChange(e, index)}
+                      />
+                    </td>
+                    <td>{row.harga_satuan}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3">No items selected</td>
+                </tr>
+              )}
+            </tbody>
           </Table>
+          )}
           <ButtonContainer>
             <EditButton onClick={handleSave}>Save</EditButton>
             <CloseButton onClick={handleCloseForm}>Cancel</CloseButton>
@@ -470,14 +581,14 @@ const SalesTransactions = () => {
               <td>{row.tanggal_transaksi}</td>
               <td>{row.total_pembayaran}</td>
               <td>
-
-
                 <ButtonContainer>
                   <DetailButton onClick={() => handleDetail(row)}>Detail</DetailButton>
-                  
-
-                  <EditButton onClick={() => handleEdit(row)}>Update</EditButton>
-                  <DeleteButton onClick={() => handleDelete(row)}>Delete</DeleteButton>
+                  {user.role === 2 && (
+                    <>
+                    <EditButton onClick={() => handleEdit(row)}>Update</EditButton>
+                    <DeleteButton onClick={() => handleDelete(row)}>Delete</DeleteButton>
+                    </>
+                  )}
                 </ButtonContainer>
               </td>
             </tr>
@@ -487,5 +598,4 @@ const SalesTransactions = () => {
     </TableContainer>
   );
 };
-
 export default SalesTransactions;
