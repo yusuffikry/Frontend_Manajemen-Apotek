@@ -41,12 +41,20 @@ const Button = styled.button`
 `;
 
 const AddButton = styled(Button)`
-  width: 50%;
   background-color: #1abc9c;
   margin-top: 1rem;
 
   &:hover {
     background-color: #16a085;
+  }
+`;
+
+const ClearButton = styled(Button)`
+  margin-top: 1rem;
+  background-color: #95a5a6;
+
+  &:hover {
+    background-color: #7f8c8d;
   }
 `;
 
@@ -187,7 +195,7 @@ const DataPemasok = () => {
     setEditIndex(index);
     const dataToEdit = data[index];
     setEditData({
-      id: dataToEdit.id_pemasok, // Pastikan id_pemasok digunakan di sini
+      id: dataToEdit.id_pemasok,
       nama_perusahaan: dataToEdit.nama_perusahaan,
       nomor_telepon: dataToEdit.nomor_telepon
     });
@@ -202,7 +210,7 @@ const DataPemasok = () => {
           return;
         }
   
-        const idToDelete = data[index].id; // Ambil id langsung dari data pemasok
+        const idToDelete = data[index].id_pemasok;
         if (!idToDelete) {
           console.error('No id found for deletion.');
           return;
@@ -214,15 +222,19 @@ const DataPemasok = () => {
           },
         });
   
-        // Update data state by filtering out the deleted item
         setData(prevData => prevData.filter((item, idx) => idx !== index));
         alert('Supplier data deleted successfully!');
       } catch (error) {
         console.error("Error deleting pemasok:", error);
       }
     }
-  };
+  };  
   
+  const handleClear = () => {
+    setEditData({ id: '', nama_perusahaan: '', nomor_telepon: '' });
+    setIsEditing(false);
+    setEditIndex(null);
+  };
 
   return (
     <Container>
@@ -242,7 +254,10 @@ const DataPemasok = () => {
           value={editData.nomor_telepon}
           onChange={handleInputChange}
         />
-        <AddButton onClick={handleAdd}>{isEditing ? 'Save' : 'Add'}</AddButton>
+        <ButtonContainer>
+          <AddButton onClick={handleAdd}>{isEditing ? 'Save' : 'Add'}</AddButton>
+          <ClearButton onClick={handleClear}>Clear</ClearButton>
+        </ButtonContainer>
       </FormContainer>
       <Table>
         <thead>

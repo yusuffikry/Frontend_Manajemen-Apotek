@@ -102,11 +102,6 @@ const Login = () => {
   }
   }
 
-  // if (localStorage.getItem('token') && localStorage.getItem('isAuthenticated')){
-  //   const access_token = localStorage.getItem('token');
-  //   me(access_token)
-  // }
-
   const handleLogin = async (e) => {
     e.preventDefault();
     if (email.length > 1 && password.length > 1) {
@@ -128,8 +123,6 @@ const Login = () => {
         }
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem("token", res.data.access_token);
-
-        
 
         me(res.data.access_token)
       } catch (error) {

@@ -75,6 +75,15 @@ const EditButton = styled(Button)`
   }
 `;
 
+const AddObatButton = styled(Button)`
+  background-color: #1abc9c;
+    margin-top: 1.7rem;
+
+  &:hover {
+    background-color: #16a085;
+  }
+`;
+
 const DeleteButton = styled(Button)`
   background-color: #e74c3c;
 
@@ -151,8 +160,16 @@ const Input = styled.input`
 const Label = styled.label`
   width: 100%;
   text-align: left;
-  margin: 0rem 0 0.25rem;
+  margin: 0.5rem 0 0.25rem;
   color: white;
+`;
+
+const Select = styled.select`
+  width: calc(100% - 1rem);
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 `;
 
 const flexStyle = {
@@ -182,14 +199,10 @@ const SalesTransactions = () => {
         },
       });
       setData(response.data);
-      // console.log(data);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
-
-
-  
 
   useEffect(() => {
     fetchTransaksi();
@@ -222,8 +235,6 @@ const SalesTransactions = () => {
 
   }
 
-  // const [selectedItemDetail, setSelectedItemDetail] = useState(null);
-
   const handleDetail = async (transaction) => {
   try {
     const response = await axios.get(
@@ -240,8 +251,6 @@ const SalesTransactions = () => {
   }
 };
 
-  
-
   const handleEdit = async (transaction) => {
     try {
       const response = await axios.get(
@@ -253,15 +262,13 @@ const SalesTransactions = () => {
         }
       );
       console.log(response.data)
-      setEditingTransaction(response.data); // Set data transaksi terpilih
+      setEditingTransaction(response.data); 
     } catch (error) {
       console.error("Error fetching transaction details:", error);
     }
   };
 
   useEffect(() => {
-    // console.log(editingTransaction);
-    // if(editingTransaction != null) setTotal(editingTransaction.details.reduce((acc, item) => acc + item.jumlah_beli * item.harga_satuan, 0));
     if(selectedObat != null) setTotal(selectedObat.reduce((acc, item) => acc + item.jumlah_beli * item.harga_satuan, 0));
     console.log(total);
   }, [selectedObat]);
@@ -274,7 +281,7 @@ const SalesTransactions = () => {
   }, [editingTransaction])
 
   const handleDelete = async (transaction) => {
-    if (window.confirm(`Are you sure you want to delete the transaction with ID: ${transaction.id_transaksi_penjualan}?`)) {
+    if (window.confirm(`Are you sure you want to delete the transaction?`)) {
       await axios.delete(`http://localhost:8000/api/transaksi/${transaction.id_transaksi_penjualan}`, {headers : {Authorization: `Bearer ${localStorage.getItem("token")}`}});
       setSelectedTransaction(null); 
       setEditingTransaction(null);
@@ -284,7 +291,6 @@ const SalesTransactions = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    // console.log(name, value);
     if (editingTransaction) {
       setEditingTransaction({
         ...editingTransaction,
@@ -310,7 +316,7 @@ const SalesTransactions = () => {
         "details" : 
           editingTransaction.details.map(obat => ({
             id_obat: obat.id_obat,
-            jumlah_beli: parseInt(obat.jumlah_beli), // pastikan jumlah_beli diubah menjadi number jika perlu
+            jumlah_beli: parseInt(obat.jumlah_beli), 
             harga_satuan: obat.harga_satuan || 0
           }))
         }
@@ -334,7 +340,7 @@ const SalesTransactions = () => {
         "details" : 
           selectedObat.map(obat => ({
             id_obat: obat.id_obat,
-            jumlah_beli: parseInt(obat.jumlah_beli), // pastikan jumlah_beli diubah menjadi number jika perlu
+            jumlah_beli: parseInt(obat.jumlah_beli), 
             harga_satuan: obat.harga_satuan || 0
           }))
         }
@@ -349,7 +355,6 @@ const SalesTransactions = () => {
             },
           }
         );
-      // console.log(transaksi);
       setSelectedObat(null)
     }
     fetchTransaksi();
@@ -359,8 +364,6 @@ const SalesTransactions = () => {
   const handleSelected = () => {
     if(editingTransaction){
       const id = editingTransaction.id_obat;
-      // console.log(editingTransaction.id_obat)
-      // console.log(listObat);
       setNewTransaction({});
       const selectedItem = listObat.filter((item) => item.id_obat == id);
       if(editingTransaction.details.find((item) => item.id_obat == id)){
@@ -371,7 +374,6 @@ const SalesTransactions = () => {
       alert(`Item with id ${id} not found`);
       return console.log("Item not found");
       }
-      // console.log(selectedItem);
       const newObat = {
         nama_obat: selectedItem[0].nama_obat,
         id_obat: id,
@@ -381,19 +383,12 @@ const SalesTransactions = () => {
       setEditingTransaction((prevEditingTransaction) => {
         return { ...prevEditingTransaction, details: [...prevEditingTransaction.details, newObat] };
       });
-      // console.log(editingTransaction);
     
     } else {
       const id = newTransaction.id_obat;
-      // console.log(id);
-      // console.log(listObat);
       const selectedItem = listObat.filter((item) => 
         item.id_obat == id
-        // console.log(item.id_obat==id);
       );
-      // console.log(selectedItem);
-      // console.log(id);
-      // console.log(newTransaction.id_obat);
       
       if(selectedObat.find((item) => item.id_obat == id)){
         alert(`Item with id ${id} already exists`);
@@ -418,13 +413,9 @@ const SalesTransactions = () => {
         Obat
       ]);
       console.log(selectedObat);
-      // console.log("listObat"+selectedObat.length);
     }
-    // console.log(editingTransaction.details);
     
   };
-
-  // useEffect(() => {console.log(newTransaction)}, [newTransaction]);
 
   const handleCloseDetail = () => {
     setSelectedTransaction(null);
@@ -440,9 +431,7 @@ const SalesTransactions = () => {
     const updatedObat = [...selectedObat];
     updatedObat[index].jumlah_beli = value;
     setSelectedObat(updatedObat);
-    // console.log(value);
   };
-  
 
   const handleCloseForm = () => {
     setShowForm(false);
@@ -456,15 +445,15 @@ const SalesTransactions = () => {
       {selectedTransaction && (
         <FormContainer>
           <h3>Transaction Details</h3>
-          <Label>ID Transaksi: {selectedTransaction.transaksi.id_transaksi_penjualan}</Label>
-          <Label>Tanggal Transaksi: {selectedTransaction.transaksi.tanggal_transaksi}</Label>
-          <Label>Total Pembayaran: {selectedTransaction.transaksi.total_pembayaran}</Label>
+          <Label>ID Transaction: {selectedTransaction.transaksi.id_transaksi_penjualan}</Label>
+          <Label>Transaction Date: {selectedTransaction.transaksi.tanggal_transaksi}</Label>
+          <Label>Total Payment: {selectedTransaction.transaksi.total_pembayaran}</Label>
           <Table>
             <thead>
               <tr>
-                <th>ID Obat</th>
-                <th>Jumlah Beli</th>
-                <th>Harga Satuan</th>
+                <th>Medicine Name</th>
+                <th>Quantity Purchased</th>
+                <th>Unit Price</th>
               </tr>
             </thead>
             <tbody>
@@ -493,31 +482,29 @@ const SalesTransactions = () => {
           <h3>{editingTransaction ? 'Edit Transaction' : 'Add New Transaction'}</h3>
           <div style={flexStyle}>
             <div style={flexGrowStyle}>
-              <Label htmlFor="nama_obat">Obat</Label>
-              <select
-                name="id_obat"
-                value={newTransaction.id_obat}
-                onChange={handleInputChange}
-              >
-                <option value="">Select Obat</option>
-                {listObat.map((row, index) => (
-                  <option value={`${row.id_obat}`} key={index}>{row.nama_obat}</option>
-                ))}
-              </select>
+            <Label htmlFor="obat">Select Medicine:</Label>
+          <Select name="id_obat" onChange={handleInputChange}>
+            <option value="">Select Medicine</option>
+            {listObat.map((obat) => (
+              <option key={obat.id_obat} value={obat.id_obat}>
+                {obat.nama_obat}
+              </option>
+            ))}
+          </Select>
             </div>
             <div>
-              <EditButton onClick={handleSelected}> + </EditButton>
+              <AddObatButton onClick={handleSelected}> + </AddObatButton>
             </div>
           </div>
           {editingTransaction && (
 
 
-              <><Label>ID Transaksi: {editingTransaction.transaksi.id_transaksi_penjualan}</Label><Label>Tanggal Transaksi: {editingTransaction.transaksi.tanggal_transaksi}</Label><Label>Total Pembayaran: {total}</Label><Table>
+              <><Label>ID Transaction: {editingTransaction.transaksi.id_transaksi_penjualan}</Label><Label>Tanggal Transaksi: {editingTransaction.transaksi.tanggal_transaksi}</Label><Label>Total Pembayaran: {total}</Label><Table>
               <thead>
                 <tr>
-                  <th>ID Obat</th>
-                  <th>Jumlah Beli</th>
-                  <th>Harga Satuan</th>
+                  <th>ID Medicine</th>
+                  <th>Quantity Purchased</th>
+                  <th>Unit Price</th>
                 </tr>
               </thead>
               <tbody>
@@ -534,7 +521,7 @@ const SalesTransactions = () => {
           )}
           {!editingTransaction && (
           <Table>
-            <Label>Total Pembayaran: {total}</Label>
+            <Label>Total Payment: {total}</Label>
             <tbody>
               {selectedObat ? (
                 selectedObat.map((row, index) => (

@@ -299,7 +299,7 @@ const ManageUsers = () => {
     <TableContainer>
       <h3>Manage Users</h3>
       {!isAdding &&
-        !isEditing && ( // Conditionally render the Add button
+        !isEditing && ( 
           <RightButtonContainer>
             <AddUserButton
               onClick={() => {

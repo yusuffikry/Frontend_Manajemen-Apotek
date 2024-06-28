@@ -113,7 +113,7 @@ const UserProfile = () => {
     alamat: '',
     password: ''
   });
-  const [editPassword, setEditPassword] = useState(false); // State to track if user wants to edit password
+  const [editPassword, setEditPassword] = useState(false); 
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -129,7 +129,7 @@ const UserProfile = () => {
           email: response.data.email,
           role: response.data.role === 1 ? 'employee' : 'admin',
           alamat: response.data.alamat,
-          password: '' // Tidak disarankan untuk mengirimkan password dalam respons
+          password: '' 
         });
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -151,7 +151,7 @@ const UserProfile = () => {
         alamat: editUser.alamat,
       };
       if (editPassword) {
-        userData.password = editUser.password; // Include password only if editPassword is true
+        userData.password = editUser.password; 
       }
       const response = await axios.put(`http://localhost:8000/api/user/${editUser.id_user}`, userData, {
         headers: {

@@ -41,7 +41,24 @@ const Button = styled.button`
 `;
 
 const AddButton = styled(Button)`
-  width: 50%;
+  background-color: #1abc9c;
+  margin-top: 1rem;
+
+  &:hover {
+    background-color: #16a085;
+  }
+`;
+
+const ClearButton = styled(Button)`
+  background-color: #95a5a6;
+  margin-top: 1rem;
+
+  &:hover {
+    background-color: #7f8c8d;
+  }
+`;
+
+const SaveButton = styled(Button)`
   background-color: #1abc9c;
   margin-top: 1rem;
 
@@ -89,6 +106,13 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+`;
+
+const FormButtonContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
 `;
 
 const MedicineInventory = () => {
@@ -162,7 +186,7 @@ const MedicineInventory = () => {
 
   const handleEdit = (item) => {
     setForm({
-      id: item.id_obat, // pastikan menggunakan id yang benar dari data backend
+      id: item.id_obat, 
       nama_obat: item.nama_obat,
       jenis_obat: item.jenis_obat,
       harga: item.harga,
@@ -227,6 +251,11 @@ const MedicineInventory = () => {
     }
   };
 
+  const handleClear = () => {
+    setForm({ id: '', nama_obat: '', jenis_obat: '', harga: '', jumlah_stok: '' });
+    setIsEditing(false);
+  };
+
   return (
     <Container>
       <FormContainer>
@@ -235,11 +264,14 @@ const MedicineInventory = () => {
         <Input type="text" name="jenis_obat" placeholder="Medicine Type" value={form.jenis_obat} onChange={handleInputChange} />
         <Input type="text" name="harga" placeholder="Price" value={form.harga} onChange={handleInputChange} />
         <Input type="text" name="jumlah_stok" placeholder="Quantity" value={form.jumlah_stok} onChange={handleInputChange} />
-        {isEditing ? (
-          <EditButton onClick={handleSave}>Save Changes</EditButton>
-        ) : (
-          <AddButton onClick={handleAdd}>Add Medicine Stock</AddButton>
-        )}
+        <FormButtonContainer>
+          {isEditing ? (
+            <SaveButton onClick={handleSave}>Save</SaveButton>
+          ) : (
+            <AddButton onClick={handleAdd}>Add</AddButton>
+          )}
+          <ClearButton onClick={handleClear}>Clear</ClearButton>
+        </FormButtonContainer>
       </FormContainer>
       <Table>
         <thead>
