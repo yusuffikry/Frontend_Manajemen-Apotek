@@ -11,7 +11,7 @@ const ProfileContainer = styled.div`
 `;
 
 const ProfileDetails = styled.div`
-  background-color: #fff;
+  background-color: #467aa4;
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -23,13 +23,15 @@ const ProfileDetails = styled.div`
 const Title = styled.h2`
   margin-bottom: 1rem;
   text-align: center;
+  color: white;
 `;
 
 const Detail = styled.p`
   font-size: 1.25rem; /* Slightly smaller font size */
   margin: 15px 0; /* More margin for better spacing */
   padding: 10px;
-  border-bottom: 1px solid #ccc; /* Add a bottom border for separation */
+  border-bottom: 1px solid #ccc;
+  color: white;
   &:last-child {
     border-bottom: none; /* Remove border for the last detail */
   }
@@ -65,7 +67,7 @@ const EditProfileContainer = styled.div`
 `;
 
 const EditProfileForm = styled.form`
-  background-color: #fff;
+  background-color: #467aa4;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -77,6 +79,7 @@ const EditProfileForm = styled.form`
 const Label = styled.label`
   display: block;
   margin-top: 1rem;
+  color: white;
   font-size: 1rem;
   text-align: left;
 `;
@@ -101,6 +104,7 @@ const CheckboxContainer = styled.div`
 const CheckboxLabel = styled.label`
   margin-left: 0.5rem;
   font-size: 0.9rem;
+  color: white;
 `;
 
 const UserProfile = () => {

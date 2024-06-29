@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 
 const TableContainer = styled.div`
-  width: 90%;
+  width: 75%;
   margin: 2rem auto;
 `;
 
@@ -160,7 +160,8 @@ const Input = styled.input`
 const Label = styled.label`
   width: 100%;
   text-align: left;
-  margin: 0.5rem 0 0.25rem;
+  margin-bottom: -0.5rem;
+  margin-top: 1rem;
   color: white;
 `;
 
@@ -471,12 +472,12 @@ const SalesTransactions = () => {
       )}
 
 
-{!showForm && (
+      {!showForm && (
         <AddButtonContainer>
           <AddButton onClick={handleShowForm}>Add New Transaction</AddButton>
         </AddButtonContainer>
       )}
-      
+
       {showForm && (
         <FormContainer>
           <h3>{editingTransaction ? 'Edit Transaction' : 'Add New Transaction'}</h3>
@@ -497,12 +498,14 @@ const SalesTransactions = () => {
             </div>
           </div>
           {editingTransaction && (
-
-
-              <><Label>ID Transaction: {editingTransaction.transaksi.id_transaksi_penjualan}</Label><Label>Tanggal Transaksi: {editingTransaction.transaksi.tanggal_transaksi}</Label><Label>Total Pembayaran: {total}</Label><Table>
+              <>
+              <Label>ID Transaction : {editingTransaction.transaksi.id_transaksi_penjualan}</Label>
+                <Label>Transaction Date : {editingTransaction.transaksi.tanggal_transaksi}</Label>
+                <Label>Total Payment : {total}</Label>
+              <Table>
               <thead>
                 <tr>
-                  <th>ID Medicine</th>
+                  <th>Medicine Name</th>
                   <th>Quantity Purchased</th>
                   <th>Unit Price</th>
                 </tr>
@@ -517,11 +520,17 @@ const SalesTransactions = () => {
                 ))}
               </tbody>
             </Table></>
-
           )}
           {!editingTransaction && (
+          <><Label>Total Payment : {total}</Label>
           <Table>
-            <Label>Total Payment: {total}</Label>
+            <thead>
+                <tr>
+                  <th>Medicine Name</th>
+                  <th>Quantity Purchased</th>
+                  <th>Unit Price</th>
+                </tr>
+              </thead>
             <tbody>
               {selectedObat ? (
                 selectedObat.map((row, index) => (
@@ -545,6 +554,7 @@ const SalesTransactions = () => {
               )}
             </tbody>
           </Table>
+          </> 
           )}
           <ButtonContainer>
             <EditButton onClick={handleSave}>Save</EditButton>
@@ -555,7 +565,7 @@ const SalesTransactions = () => {
       <Table>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>ID Transaction</th>
             <th>Transaction Date</th>
             <th>Total Payment</th>
             <th>Actions</th>
