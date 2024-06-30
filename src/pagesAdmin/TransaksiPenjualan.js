@@ -192,6 +192,12 @@ const SalesTransactions = () => {
   const [showForm, setShowForm] = useState(false);
   const [user, setUser] = useState();
 
+  useEffect(() => {
+    fetchTransaksi();
+    fetchObat();
+    fetchCurrentUser();
+  }, []);
+
   const fetchTransaksi = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/transaksi", {
@@ -204,12 +210,6 @@ const SalesTransactions = () => {
       console.error("Error fetching users:", error);
     }
   };
-
-  useEffect(() => {
-    fetchTransaksi();
-    fetchObat();
-    fetchCurrentUser();
-  }, []);
 
   const fetchObat = async () => {
     try {
@@ -427,11 +427,20 @@ const SalesTransactions = () => {
     setEditingTransaction(null); 
   };
 
-  const handleJumlahBeliChange = (e, index) => {
+  const handleJumlahBeliChange = (e, index, isEditing) => {
     const { value } = e.target;
-    const updatedObat = [...selectedObat];
-    updatedObat[index].jumlah_beli = value;
-    setSelectedObat(updatedObat);
+    if (isEditing) {
+      const updatedDetails = [...editingTransaction.details];
+      updatedDetails[index].jumlah_beli = value;
+      setEditingTransaction((prevEditingTransaction) => ({
+        ...prevEditingTransaction,
+        details: updatedDetails,
+      }));
+    } else {
+      const updatedObat = [...selectedObat];
+      updatedObat[index].jumlah_beli = value;
+      setSelectedObat(updatedObat);
+    }
   };
 
   const handleCloseForm = () => {
@@ -498,28 +507,36 @@ const SalesTransactions = () => {
             </div>
           </div>
           {editingTransaction && (
-              <>
+            <>
               <Label>ID Transaction : {editingTransaction.transaksi.id_transaksi_penjualan}</Label>
-                <Label>Transaction Date : {editingTransaction.transaksi.tanggal_transaksi}</Label>
-                <Label>Total Payment : {total}</Label>
+              <Label>Transaction Date : {editingTransaction.transaksi.tanggal_transaksi}</Label>
+              <Label>Total Payment : {total}</Label>
               <Table>
-              <thead>
-                <tr>
-                  <th>Medicine Name</th>
-                  <th>Quantity Purchased</th>
-                  <th>Unit Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {editingTransaction.details.map((detail, index) => (
-                  <tr key={index}>
-                    <td>{listObat.find(item => item.id_obat == detail.id_obat).nama_obat}</td>
-                    <td>{detail.jumlah_beli}</td>
-                    <td>{detail.harga_satuan}</td>
+                <thead>
+                  <tr>
+                    <th>Medicine Name</th>
+                    <th>Quantity Purchased</th>
+                    <th>Unit Price</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table></>
+                </thead>
+                <tbody>
+                  {editingTransaction.details.map((detail, index) => (
+                    <tr key={index}>
+                      <td>{listObat.find(item => item.id_obat == detail.id_obat).nama_obat}</td>
+                      <td>
+                        <input
+                          name="jumlah_beli"
+                          type="number"
+                          value={detail.jumlah_beli}
+                          onChange={(e) => handleJumlahBeliChange(e, index, true)}
+                        />
+                      </td>
+                      <td>{detail.harga_satuan}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </>
           )}
           {!editingTransaction && (
           <><Label>Total Payment : {total}</Label>

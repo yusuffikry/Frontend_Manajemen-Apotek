@@ -90,16 +90,16 @@ const Login = () => {
       },
     });
     const user = userRes.data;
-    if (user.role === 0 || user.role === 2) {
+    if (user.role === 2) {
       navigate('/admin');
     } else if (user.role === 1) {
       navigate('/user');
     } else {
       console.error('Invalid role');
     }
-  } catch (error) {
-    console.error("Me error:", error);
-  }
+    } catch (error) {
+      console.error("Me error:", error);
+    }
   }
 
   const handleLogin = async (e) => {
