@@ -158,7 +158,7 @@ const DataPemasok = () => {
         );
   
         const updatedData = [...data];
-        updatedData[editIndex] = editData;
+        updatedData[editIndex] = { ...editData, id_pemasok: editData.id };
         setData(updatedData);
         setEditIndex(null);
         setEditData({ id: '', nama_perusahaan: '', nomor_telepon: '' });
