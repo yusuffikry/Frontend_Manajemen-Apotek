@@ -142,6 +142,7 @@ const DataPemasok = () => {
         alert('ID is required for editing!');
         return;
       }
+      
       try {
         await axios.put(
           `http://localhost:8000/api/pemasok/${editData.id}`,
