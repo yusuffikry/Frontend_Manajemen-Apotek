@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { loadToken } from '../utils';
 
 const Container = styled.div`
   padding: 1rem;
@@ -120,6 +121,7 @@ const MedicineInventory = () => {
 
   const fetchObat = async () => {
     try {
+      await loadToken();
       const response = await axios.get("http://localhost:8000/api/obat", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

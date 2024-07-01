@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {StrictMode} from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Navbar from './components/Navbar';
@@ -14,6 +14,7 @@ import EditProfile from './pagesUsers/EditProfile';
 import MainDashboard from './mainPages/MainDashboard';
 import { AuthProvider } from './AuthContext';
 import ProtectedRoute from './ProtectedRoute';
+
 
 const AppContainer = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ const App = () => {
     <AppContainer>
       {!isAuthPage && <Navbar />}
       <MainContent>
-        <Routes>
+        <Routes >
           <Route path="/" element={<MainDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -52,11 +53,13 @@ const App = () => {
 };
 
 const AppWrapper = () => (
+  <StrictMode>
   <Router>
     <AuthProvider>
       <App />
     </AuthProvider>
   </Router>
+  </StrictMode>
 );
 
 export default AppWrapper;

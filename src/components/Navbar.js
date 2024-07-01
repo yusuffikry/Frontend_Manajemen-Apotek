@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import styled from 'styled-components';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; 
+import { AuthContext } from '../AuthContext';
 
 const NavbarContainer = styled.div`
   background-color: #3498db;
@@ -56,35 +57,35 @@ const LogoutButton = styled.button`
 const Navbar = () => {
   const navigate = useNavigate(); 
   const location = useLocation(); 
+
   const isAdmin = location.pathname.startsWith('/admin');
   const isUser = location.pathname.startsWith('/user');
+  const { logout } = useContext(AuthContext);
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('isAuthenticated');
-      navigate('/'); 
+      logout()
     }
   };
   
   return (
     <NavbarContainer>
-      <Brand to={isAdmin ? "/admin" : "/user"} exact>
+      <Brand to={isAdmin ? "/admin" : "/user"}>
         {isAdmin ? "Admin Dashboard" : "User Dashboard"}
       </Brand>
       <NavLinks>
         {isAdmin && (
           <>
-            <NavItem to="/admin/manage-users" activeClassName="active">Manage Users</NavItem>
-            <NavItem to="/admin/data-pemasok" activeClassName="active">Supplier Data</NavItem>
-            <NavItem to="/admin/stok-obat" activeClassName="active">Medicine Stock</NavItem>
-            <NavItem to="/admin/transaksi-penjualan" activeClassName="active">Transactions</NavItem>
+            <NavItem to="/admin/manage-users" activeclassname="active">Manage Users</NavItem>
+            <NavItem to="/admin/data-pemasok" activeclassname="active">Supplier Data</NavItem>
+            <NavItem to="/admin/stok-obat" activeclassname="active">Medicine Stock</NavItem>
+            <NavItem to="/admin/transaksi-penjualan" activeclassname="active">Transactions</NavItem>
           </>
         )}
         {isUser && (
           <>
-            <NavItem to="/user/transaksi-penjualan" activeClassName="active">Transactions</NavItem>
-            <NavItem to="/user/edit-profile" activeClassName="active">Profile</NavItem>
+            <NavItem to="/user/transaksi-penjualan" activeclassname="active">Transactions</NavItem>
+            <NavItem to="/user/edit-profile" activeclassname="active">Profile</NavItem>
           </>
         )}
         <LogoutButton onClick={handleLogout}>Logout</LogoutButton>

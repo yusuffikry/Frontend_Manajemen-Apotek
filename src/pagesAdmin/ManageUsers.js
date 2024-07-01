@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import {loadToken} from "../utils";
 
 const TableContainer = styled.div`
   width: 100%;
@@ -142,6 +143,8 @@ const ManageUsers = () => {
 
   const fetchUsers = async () => {
     try {
+      await loadToken();
+      
       const response = await axios.get("http://localhost:8000/api/user", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

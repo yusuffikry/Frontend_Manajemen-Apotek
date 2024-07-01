@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import styled from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
 import backgroundImage from './bg_apotek.jpeg';
 import axios from 'axios';
-import qs from 'qs';
+import { loadToken } from '../utils';
+import { AuthContext } from '../AuthContext';
 
 const LoginContainer = styled.div`
   display: flex;
@@ -80,40 +81,56 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { login } = useContext(AuthContext);
 
-  const me = async (access_token) => {
-    try {
+  // const me = async (access_token) => {
+  //   try {
       
-      const userRes = await axios.get("http://localhost:8000/auth/me", {
-        headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
-    const user = userRes.data;
-    if (user.role === 2) {
-      navigate('/admin');
-    } else if (user.role === 1) {
-      navigate('/user');
-    } else {
-      console.error('Invalid role');
-    }
-    } catch (error) {
-      console.error("Me error:", error);
-    }
-  }
+      
+  //     const userRes = await axios.get("http://localhost:8000/auth/me", {
+  //       headers: {
+  //       Authorization: `Bearer ${access_token}`,
+  //     },
+  //   });
+  //   const user = localStorage.getItem('role').toString();
+  //   console.log(user)
+  //   // console.log(us)
+  //   if (user === 2) {
+  //     navigate('/admin');
+  //   } else if (user === 1) {
+  //     navigate('/user');
+  //   } else {
+  //     console.error('Invalid role');
+  //   }
+  //   } catch (error) {
+  //     console.error("Me error:", error);
+  //   }
+  // }
 
   const handleLogin = async (e) => {
     e.preventDefault();
     if (email.length > 1 && password.length > 1) {
       try {
-        const formData = qs.stringify({
-          username: email,
-          password: password
-        });
+        // const formData = qs.stringify({
+        //   nama_user: email,
+        //   password: password
+        // });
 
-        const res = await axios.post("http://127.0.0.1:8000/auth/login", formData, {
+        const formData = {
+          nama_user: email,
+          password: password
+        }
+        // console.log(formData);
+
+        await loadToken();
+
+        const access_token = localStorage.getItem('token');
+        
+
+        const res = await axios.post("http://localhost:8000/auth/login", formData, {
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
           }
         });
 
@@ -121,10 +138,24 @@ const Login = () => {
           alert('Login failed');
           return;
         }
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem("token", res.data.access_token);
+        // localStorage.setItem('user', JSON.stringify(res.data));
+        // localStorage.setItem('isAuthenticated', 'true');
+        // localStorage.setItem("token", res.data.access_token);
 
-        me(res.data.access_token)
+        // me(access_token)
+        // setIs
+        const user = res.data;
+        // console.log(user)
+
+        if (user.role === 2) {
+          login(access_token,JSON.stringify(res.data))
+          navigate('/admin');
+        } else if (user.role === 1) {
+          login(access_token,JSON.stringify(res.data))
+          navigate('/user');
+        } else {
+          console.error('Invalid role');
+        }
       } catch (error) {
         console.error("Login error:", error);
         setError('Invalid username or password. Please try again.');

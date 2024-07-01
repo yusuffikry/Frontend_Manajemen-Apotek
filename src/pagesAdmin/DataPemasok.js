@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { loadToken } from '../utils';
 
 const Container = styled.div`
   padding: 1rem;
@@ -115,6 +116,7 @@ const DataPemasok = () => {
 
   const fetchPemasok = async () => {
     try {
+      await loadToken();
       const response = await axios.get("http://localhost:8000/api/pemasok", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
