@@ -120,26 +120,37 @@ const UserProfile = () => {
   const [editPassword, setEditPassword] = useState(false); 
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/auth/me', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`, 
-          }
-        });
-        setEditUser({
-          id_user: response.data.id_user,
-          nama_user: response.data.nama_user,
-          email: response.data.email,
-          role: response.data.role === 1 ? 'employee' : 'admin',
-          alamat: response.data.alamat,
-          password: '' 
-        });
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-    fetchUserData();
+    // const fetchUserData = async () => {
+    //   try {
+    //     await loadToken();
+    //     const response = await axios.get('http://localhost:8000/auth/me', {
+    //       headers: {
+    //         'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+    //       }
+    //     });
+    //     setEditUser({
+    //       id_user: response.data.id_user,
+    //       nama_user: response.data.nama_user,
+    //       email: response.data.email,
+    //       role: response.data.role === 1 ? 'employee' : 'admin',
+    //       alamat: response.data.alamat,
+    //       password: '' 
+    //     });
+    //   } catch (error) {
+    //     console.error('Error fetching user data:', error);
+    //   }
+    // };
+    // fetchUserData();
+    const response= JSON.parse(localStorage.getItem('user'));
+    setEditUser({
+            id_user: response.id_user,
+            nama_user: response.nama_user,
+            email: response.email,
+            role: response.role === 1 ? 'employee' : 'admin',
+            alamat: response.alamat,
+            password: '' 
+          });
+
   }, []);
 
   const handleEditClick = () => {

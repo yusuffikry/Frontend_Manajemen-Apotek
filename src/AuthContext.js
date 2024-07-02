@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 
 export const AuthContext = createContext();
 
@@ -20,10 +21,13 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setIsAuthenticated(false);
+    console.log(isAuthenticated)
+    window.location.href = "/login"
   };
+  
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated,login,logout }}>
+    <AuthContext.Provider value={{ login,logout }}>
       {children}
     </AuthContext.Provider>
   );

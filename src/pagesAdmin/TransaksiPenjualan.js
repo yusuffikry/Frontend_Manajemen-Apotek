@@ -48,6 +48,10 @@ const Button = styled.button`
   }
 `;
 
+const StatusText = styled.span`
+  color: ${props => props.color || 'black'};
+`;
+
 const AddButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -71,7 +75,17 @@ const DetailButton = styled(Button)`
 `;
 
 const EditButton = styled(Button)`
+  background-color: #E7F0DC;
+  color: ${props => props.color || 'black'};
+
+  &:hover {
+    background-color: #16a085;
+  }
+`;
+
+const SaveButton = styled(EditButton)`
   background-color: #1abc9c;
+  color: ${props => props.color || 'white'}; /* Default color is white */
 
   &:hover {
     background-color: #16a085;
@@ -325,6 +339,7 @@ const SalesTransactions = () => {
             harga_satuan: obat.harga_satuan || 0
           }))
         }
+        console.log(transaksi)
         await axios.put(
           `http://localhost:8000/api/transaksi/${id_detail}` ,
             transaksi
@@ -333,7 +348,9 @@ const SalesTransactions = () => {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
+            
           }
+
         );
       setEditingTransaction(null);
     } else {
@@ -652,8 +669,8 @@ const SalesTransactions = () => {
           </> 
           )}
           <ButtonContainer>
-            <EditButton onClick={handleSave}>Save</EditButton>
-            <EditButton onClick={handleProcessing}>In Proccess</EditButton>
+            <SaveButton  onClick={handleSave}>Save</SaveButton>
+            <EditButton  onClick={handleProcessing}>On Proccess</EditButton>
             <CloseButton onClick={handleCloseForm}>Cancel</CloseButton>
           </ButtonContainer>
         </FormContainer>
@@ -674,17 +691,30 @@ const SalesTransactions = () => {
               <td>{index + 1}</td>
               <td>{row.tanggal_transaksi}</td>
               <td>{row.total_pembayaran}</td>
-              <td>{row.status} </td>
               <td>
-                <ButtonContainer>
-                  <DetailButton onClick={() => handleDetail(row)}>Detail</DetailButton>
-                  {user.role === 2 && (
-                    <>
-                    <EditButton onClick={() => handleEdit(row)}>Update</EditButton>
+                {row.status === 1 ? (
+                  <StatusText color="green">Done</StatusText>
+                ) : (
+                  <StatusText color="red">On Process</StatusText>
+                )}
+              </td>
+
+              <td>
+              <ButtonContainer>
+                <DetailButton onClick={() => handleDetail(row)}>Detail</DetailButton>
+                {user.role === 2 && (
+                  <>
+                    <EditButton
+                      onClick={() => handleEdit(row)}
+                      disabled={row.status === 1}
+                    >
+                      Update
+                    </EditButton>
                     <DeleteButton onClick={() => handleDelete(row)}>Delete</DeleteButton>
-                    </>
-                  )}
-                </ButtonContainer>
+                  </>
+                )}
+              </ButtonContainer>
+
               </td>
             </tr>
           ))}

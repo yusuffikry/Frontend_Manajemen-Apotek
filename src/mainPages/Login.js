@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
 import backgroundImage from './bg_apotek.jpeg';
@@ -83,50 +83,19 @@ const Login = () => {
   const [error, setError] = useState('');
   const { login } = useContext(AuthContext);
 
-  // const me = async (access_token) => {
-  //   try {
-      
-      
-  //     const userRes = await axios.get("http://localhost:8000/auth/me", {
-  //       headers: {
-  //       Authorization: `Bearer ${access_token}`,
-  //     },
-  //   });
-  //   const user = localStorage.getItem('role').toString();
-  //   console.log(user)
-  //   // console.log(us)
-  //   if (user === 2) {
-  //     navigate('/admin');
-  //   } else if (user === 1) {
-  //     navigate('/user');
-  //   } else {
-  //     console.error('Invalid role');
-  //   }
-  //   } catch (error) {
-  //     console.error("Me error:", error);
-  //   }
-  // }
-
   const handleLogin = async (e) => {
     e.preventDefault();
     if (email.length > 1 && password.length > 1) {
       try {
-        // const formData = qs.stringify({
-        //   nama_user: email,
-        //   password: password
-        // });
-
         const formData = {
           nama_user: email,
           password: password
-        }
-        // console.log(formData);
+        };
 
         await loadToken();
 
         const access_token = localStorage.getItem('token');
         
-
         const res = await axios.post("http://localhost:8000/auth/login", formData, {
           headers: {
             "Content-Type": "application/json",
@@ -138,20 +107,14 @@ const Login = () => {
           alert('Login failed');
           return;
         }
-        // localStorage.setItem('user', JSON.stringify(res.data));
-        // localStorage.setItem('isAuthenticated', 'true');
-        // localStorage.setItem("token", res.data.access_token);
 
-        // me(access_token)
-        // setIs
         const user = res.data;
-        // console.log(user)
 
         if (user.role === 2) {
-          login(access_token,JSON.stringify(res.data))
+          login(access_token, JSON.stringify(res.data));
           navigate('/admin');
         } else if (user.role === 1) {
-          login(access_token,JSON.stringify(res.data))
+          login(access_token, JSON.stringify(res.data));
           navigate('/user');
         } else {
           console.error('Invalid role');
