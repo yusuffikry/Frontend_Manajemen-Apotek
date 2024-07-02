@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated  = localStorage.getItem("isAuthenticated");
+  const isAuthenticated  = localStorage.getItem("token");
 
   // const currentPath = window.location.pathname;
 
