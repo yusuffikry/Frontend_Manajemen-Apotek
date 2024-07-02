@@ -109,6 +109,7 @@ const Login = () => {
         }
 
         const user = res.data;
+        console.log(user.role === 2)
 
         if (user.role === 2) {
           login(access_token, JSON.stringify(res.data));

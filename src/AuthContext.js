@@ -4,11 +4,13 @@ import { Navigate } from 'react-router-dom';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token);
+    // const token = localStorage.getItem('token');
+    // setIsAuthenticated(!!token);
+    // console.log(!token);
+    // console.log(isAuthenticated)
   }, []);
 
   const login = (token,user) => {
@@ -21,7 +23,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setIsAuthenticated(false);
-    console.log(isAuthenticated)
+    // console.log(isAuthenticated)
     window.location.href = "/login"
   };
   
