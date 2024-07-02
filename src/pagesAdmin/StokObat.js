@@ -205,6 +205,12 @@ const MedicineInventory = () => {
       return;
     }
 
+    if (parseInt(jumlah_stok) <= 0 || parseFloat(harga) <= 0) {
+      alert("Data must be greater than zero!");
+      return;
+    }
+  
+
     try {
       const response = await axios.put(
         `http://localhost:8000/api/obat/${id}`,

@@ -300,12 +300,29 @@ const SalesTransactions = () => {
 
   const handleDelete = async (transaction) => {
     if (window.confirm(`Are you sure you want to delete the transaction?`)) {
-      await axios.delete(`http://localhost:8000/api/transaksi/${transaction.id_transaksi_penjualan}`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
-      setSelectedTransaction(null);
-      setEditingTransaction(null);
-      fetchTransaksi();
+      try {
+        await axios.delete(
+          `http://localhost:8000/api/transaksi/${transaction.id_transaksi_penjualan}`,
+          { 
+            headers: { 
+              Authorization: `Bearer ${localStorage.getItem("token")}` 
+            } 
+          }
+        );
+        setSelectedTransaction(null);
+        setEditingTransaction(null);
+        fetchTransaksi();
+        
+        // Menampilkan alert bahwa transaksi telah berhasil dihapus
+        alert('Transaction deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting transaction:', error);
+        // Menampilkan alert atau pesan kesalahan jika ada masalah saat menghapus transaksi
+        alert('Failed to delete transaction. Please try again.');
+      }
     }
   };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
