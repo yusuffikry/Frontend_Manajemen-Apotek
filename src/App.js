@@ -1,4 +1,4 @@
-import React, {StrictMode} from 'react';
+import React, { StrictMode } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Navbar from './components/Navbar';
@@ -37,14 +37,15 @@ const App = () => {
         <Routes >
           <Route path="/" element={<MainDashboard />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/admin/manage-users" element={<ProtectedRoute><ManageUsers /></ProtectedRoute>} />
-          <Route path="/admin/data-pemasok" element={<ProtectedRoute><DataPemasok /></ProtectedRoute>} />
-          <Route path="/admin/stok-obat" element={<ProtectedRoute><StokObat /></ProtectedRoute>} />
-          <Route path="/admin/transaksi-penjualan" element={<ProtectedRoute><TransaksiPenjualan /></ProtectedRoute>} />
-          <Route path="/user" element={<ProtectedRoute><DashboardUser /></ProtectedRoute>} />
-          <Route path="/user/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
-          <Route path="/user/transaksi-penjualan" element={<ProtectedRoute><TransaksiPenjualan /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute roles={2}><Dashboard /></ProtectedRoute>} />
+          {/* <ProtectedRoute path="/admin" element={<Dashboard />} roles={['2']} /> */}
+          <Route path="/admin/manage-users" element={<ProtectedRoute roles={2}><ManageUsers /></ProtectedRoute>} />
+          <Route path="/admin/data-pemasok" element={<ProtectedRoute roles={2}><DataPemasok /></ProtectedRoute>} />
+          <Route path="/admin/stok-obat" element={<ProtectedRoute roles={2}><StokObat /></ProtectedRoute>} />
+          <Route path="/admin/transaksi-penjualan" element={<ProtectedRoute roles={2}><TransaksiPenjualan /></ProtectedRoute>} />
+          <Route path="/user" element={<ProtectedRoute roles={1}><DashboardUser /></ProtectedRoute>} />
+          <Route path="/user/edit-profile" element={<ProtectedRoute roles={1}><EditProfile /></ProtectedRoute>} />
+          <Route path="/user/transaksi-penjualan" element={<ProtectedRoute roles={1}><TransaksiPenjualan /></ProtectedRoute>} />
         </Routes>
       </MainContent>
       {!isAuthPage && <Footer />}
@@ -54,11 +55,13 @@ const App = () => {
 
 const AppWrapper = () => (
   <StrictMode>
-  <Router>
     <AuthProvider>
-      <App />
+      <Router>
+
+        <App />
+
+      </Router>
     </AuthProvider>
-  </Router>
   </StrictMode>
 );
 
